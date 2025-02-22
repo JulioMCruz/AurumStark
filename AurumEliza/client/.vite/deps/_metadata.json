@@ -1,0 +1,85 @@
+{
+  "hash": "99f197d2",
+  "configHash": "2e4d0bc7",
+  "lockfileHash": "4dbe0efa",
+  "browserHash": "80eb15fc",
+  "optimized": {
+    "react/jsx-dev-runtime": {
+      "src": "../../../node_modules/react/jsx-dev-runtime.js",
+      "file": "react_jsx-dev-runtime.js",
+      "fileHash": "43b9db37",
+      "needsInterop": true
+    },
+    "react": {
+      "src": "../../../node_modules/react/index.js",
+      "file": "react.js",
+      "fileHash": "835704e0",
+      "needsInterop": true
+    },
+    "react-dom/client": {
+      "src": "../../../node_modules/react-dom/client.js",
+      "file": "react-dom_client.js",
+      "fileHash": "9f169b42",
+      "needsInterop": true
+    },
+    "@tanstack/react-query": {
+      "src": "../../../node_modules/@tanstack/react-query/build/modern/index.js",
+      "file": "@tanstack_react-query.js",
+      "fileHash": "5fd3f066",
+      "needsInterop": false
+    },
+    "react-router": {
+      "src": "../../node_modules/react-router/dist/development/index.mjs",
+      "file": "react-router.js",
+      "fileHash": "a584b012",
+      "needsInterop": false
+    },
+    "@radix-ui/react-tooltip": {
+      "src": "../../../node_modules/@radix-ui/react-tooltip/dist/index.mjs",
+      "file": "@radix-ui_react-tooltip.js",
+      "fileHash": "d5a23301",
+      "needsInterop": false
+    },
+    "lucide-react": {
+      "src": "../../../node_modules/lucide-react/dist/esm/lucide-react.js",
+      "file": "lucide-react.js",
+      "fileHash": "b7a49062",
+      "needsInterop": false
+    },
+    "semver": {
+      "src": "../../../node_modules/semver/index.js",
+      "file": "semver.js",
+      "fileHash": "771087c4",
+      "needsInterop": true
+    },
+    "@radix-ui/react-slot": {
+      "src": "../../../node_modules/@radix-ui/react-slot/dist/index.mjs",
+      "file": "@radix-ui_react-slot.js",
+      "fileHash": "b7897430",
+      "needsInterop": false
+    },
+    "class-variance-authority": {
+      "src": "../../../node_modules/class-variance-authority/dist/index.mjs",
+      "file": "class-variance-authority.js",
+      "fileHash": "2a0352a7",
+      "needsInterop": false
+    }
+  },
+  "chunks": {
+    "chunk-6HGZCUN7": {
+      "file": "chunk-6HGZCUN7.js"
+    },
+    "chunk-SSEEEMEJ": {
+      "file": "chunk-SSEEEMEJ.js"
+    },
+    "chunk-3KSKCDXX": {
+      "file": "chunk-3KSKCDXX.js"
+    },
+    "chunk-MHIHEFBZ": {
+      "file": "chunk-MHIHEFBZ.js"
+    },
+    "chunk-WOOG5QLI": {
+      "file": "chunk-WOOG5QLI.js"
+    }
+  }
+}
