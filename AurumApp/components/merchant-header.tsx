@@ -5,7 +5,7 @@ import { BarChart2, DollarSign, Settings, User, CreditCard } from "lucide-react"
 export function MerchantHeader() {
   return (
     <header className="bg-secondary/50 backdrop-blur-sm border-b border-border">
-      <div className="container mx-auto px-4 py-2 flex items-center justify-between">
+      <div className="container mx-auto px-4 py-4 flex items-center justify-between">
         <Link href="/" className="text-2xl font-bold text-gradient">
           AurumStark Merchant
         </Link>
