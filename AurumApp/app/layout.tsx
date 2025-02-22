@@ -3,6 +3,12 @@ import { Inter } from "next/font/google"
 import "./globals.css"
 import { Footer } from "@/components/footer"
 
+import {
+  DynamicContextProvider,
+  DynamicWidget,
+} from "@dynamic-labs/sdk-react-core";
+import { StarknetWalletConnectors } from "@dynamic-labs/starknet";
+
 const inter = Inter({ subsets: ["latin"] })
 
 export const metadata = {
@@ -19,8 +25,15 @@ export default function RootLayout({
   return (
     <html lang="en" className="dark">
       <body className={`${inter.className} min-h-screen bg-background text-foreground antialiased flex flex-col`}>
-        {children}
-        <Footer />
+      <DynamicContextProvider
+      settings={{
+        environmentId: process.env.NEXT_PUBLIC_DYNAMIC_APP_ID || "",
+        walletConnectors: [StarknetWalletConnectors],
+      }}
+    >
+          {children}
+          <Footer />
+        </DynamicContextProvider>
       </body>
     </html>
   )
