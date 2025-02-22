@@ -1,0 +1,71 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 240 10% 3.9%;
+    --foreground: 0 0% 98%;
+
+    --card: 240 10% 3.9%;
+    --card-foreground: 0 0% 98%;
+
+    --popover: 240 10% 3.9%;
+    --popover-foreground: 0 0% 98%;
+
+    --primary: 267 84% 57%;
+    --primary-foreground: 0 0% 98%;
+
+    --secondary: 240 21% 15%;
+    --secondary-foreground: 0 0% 98%;
+
+    --muted: 240 21% 15%;
+    --muted-foreground: 240 5% 64.9%;
+
+    --accent: 217 91% 60%;
+    --accent-foreground: 0 0% 98%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+
+    --border: 240 21% 15%;
+    --input: 240 21% 15%;
+    --ring: 267 84% 57%;
+
+    --radius: 0.5rem;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+/* Custom gradient backgrounds */
+.bg-hero-gradient {
+  background: linear-gradient(135deg, #1a103c 0%, #0a0a0b 100%);
+}
+
+.bg-card-gradient {
+  background: linear-gradient(135deg, #1a103c 0%, #2a1f4c 100%);
+}
+
+.text-gradient {
+  background: linear-gradient(135deg, #7b3fe4 0%, #a855f7 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.button-gradient {
+  background: linear-gradient(135deg, #7b3fe4 0%, #a855f7 100%);
+}
+
+.button-gradient:hover {
+  background: linear-gradient(135deg, #6b2fd4 0%, #9845e7 100%);
+}
+
