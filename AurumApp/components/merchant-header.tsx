@@ -1,3 +1,5 @@
+"use client"
+
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { BarChart2, DollarSign, Settings, User, CreditCard } from "lucide-react"
@@ -5,7 +7,7 @@ import {
   DynamicContextProvider,
   DynamicWidget,
 } from "@dynamic-labs/sdk-react-core";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 import { useIsLoggedIn, useDynamicContext } from "@dynamic-labs/sdk-react-core";  
 
 export function MerchantHeader() {
@@ -33,7 +35,7 @@ export function MerchantHeader() {
     <header className="bg-secondary/50 backdrop-blur-sm border-b border-border">
       <div className="container mx-auto px-4 py-4 flex items-center justify-between">
         <Link href="/" className="text-2xl font-bold text-gradient">
-          AurumStark Merchant
+          Aurum Stark Merchant
         </Link>
         <nav className="flex items-center space-x-4">
           <Link href="/merchant/dashboard">
@@ -83,7 +85,7 @@ export function MerchantHeader() {
                 </Button>
             </>
             )}
-                      
+
         </nav>
       </div>
     </header>

@@ -1,3 +1,5 @@
+"use client"
+
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { MessageSquare, CreditCard, User, Send, FileText } from "lucide-react"
@@ -5,7 +7,7 @@ import {
   DynamicContextProvider,
   DynamicWidget,
 } from "@dynamic-labs/sdk-react-core";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 import { useIsLoggedIn, useDynamicContext } from "@dynamic-labs/sdk-react-core";
 
 export function CustomerHeader() {
@@ -84,7 +86,7 @@ export function CustomerHeader() {
                 </Button>
             </>
             )}
-                      
+
           </nav>
       </div>
     </header>
