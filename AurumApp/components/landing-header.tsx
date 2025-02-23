@@ -34,7 +34,8 @@ export function LandingHeader() {
           AurumStark
         </Link>
         <nav className="flex items-center space-x-4">
-          <Link href="/pay-invoice" className="text-muted-foreground hover:text-foreground transition-colors">
+
+          {/* <Link href="/pay-invoice" className="text-muted-foreground hover:text-foreground transition-colors">
             Pay Invoice
           </Link>
           <Link href="/send-payment" className="text-muted-foreground hover:text-foreground transition-colors">
@@ -45,7 +46,8 @@ export function LandingHeader() {
             className="text-muted-foreground hover:text-foreground transition-colors"
           >
             Capture Payment
-          </Link>
+          </Link> */}
+
           {/* <Button asChild variant="secondary" size="sm" className="text-muted-foreground hover:text-foreground">
             <Link href="/customer/chat">Customer Login</Link>
           </Button>
