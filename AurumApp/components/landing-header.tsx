@@ -31,7 +31,7 @@ export function LandingHeader() {
     <header className="bg-secondary/50 backdrop-blur-sm border-b border-border">
       <div className="container mx-auto px-4 py-4 flex items-center justify-between">
         <Link href="/" className="text-2xl font-bold text-gradient">
-          AurumStark
+          Aurum Stark
         </Link>
         <nav className="flex items-center space-x-4">
 
