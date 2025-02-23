@@ -56,7 +56,7 @@ export function MerchantHeader() {
               Capture Payment
             </Button>
           </Link>
-          <Link href="/merchant/settings">
+          {/* <Link href="/merchant/settings">
             <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground">
               <Settings className="h-4 w-4 mr-2" />
               Settings
@@ -67,7 +67,7 @@ export function MerchantHeader() {
               <User className="h-4 w-4 mr-2" />
               Profile
             </Button>
-          </Link>
+          </Link> */}
 
           { !isLoggedIn && (
             <Button 

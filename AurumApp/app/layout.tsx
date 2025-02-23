@@ -24,7 +24,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className="dark">
-      <body className={`${inter.className} min-h-screen bg-background text-foreground antialiased flex flex-col`}>
+      <body className={`${inter.className} bg-background text-foreground antialiased flex flex-col`}>
       <DynamicContextProvider
       settings={{
         environmentId: process.env.NEXT_PUBLIC_DYNAMIC_APP_ID || "",
@@ -32,7 +32,7 @@ export default function RootLayout({
       }}
     >
           {children}
-          <Footer />
+          {/* <Footer /> */}
         </DynamicContextProvider>
       </body>
     </html>

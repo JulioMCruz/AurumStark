@@ -62,12 +62,12 @@ export function CustomerHeader() {
               Pay Invoice
             </Button>
           </Link>
-          <Link href="/customer/profile">
+          {/* <Link href="/customer/profile">
             <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground">
               <User className="h-4 w-4 mr-2" />
               Profile
             </Button>
-          </Link>
+          </Link> */}
 
 
           { !isLoggedIn && (
