@@ -1,30 +1,7 @@
-## Provider: rewardProvider
+## SmartContracts
 
-El provider principal para interactuar con el contrato AurumReward.
+![SmartContract](/assets/AurumContracts.svg)
 
-### Método Principal
-
-| Método | Descripción | Parámetros | Retorno |
-|--------|-------------|------------|----------|
-| claimReward | Reclama tokens ERC20 como recompensa | amount: string, tokenAddress: string | { success: boolean, transactionHash?: string, message?: string, error?: string } |
-
-## Acciones
-
-### claimReward
-
-```typescript
-// Ejemplo de uso de la acción
-const result = await agent.execute("claimReward", {
-    amount: "1000000000000000000",
-    tokenAddress: "0x049d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7"
-});
-```
-
-#### Parámetros
-
-| Nombre | Tipo | Descripción | Requerido |
-|--------|------|-------------|-----------|
-| amount | string | Cantidad de tokens a reclamar | Sí |
-| tokenAddress | string | Dirección del token ERC20 | Sí |
-
-## Desarrollo 
+- [AurumUsdc: 0x040976c636d469331a343a2fa3e67280663124a5bd7fc0bc17191ecb847d1e42](https://sepolia.starkscan.co/contract/0x040976c636d469331a343a2fa3e67280663124a5bd7fc0bc17191ecb847d1e42)
+- [AurumPoints: 0x00386cc559e9033b57bb9e2eb85a40f2af43dcfd51fa030c7ff8e4c8ba2b54d2](https://sepolia.starkscan.co/contract/0x00386cc559e9033b57bb9e2eb85a40f2af43dcfd51fa030c7ff8e4c8ba2b54d2#overview)
+- [AurumReward: 0x020a6e405f957ee966e6f1309039731f0f1d20a3074c035b08e4cfbfdb711b88](https://sepolia.starkscan.co/contract/0x020a6e405f957ee966e6f1309039731f0f1d20a3074c035b08e4cfbfdb711b88)
