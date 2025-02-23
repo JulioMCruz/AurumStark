@@ -83,7 +83,7 @@
         "@elizaos/plugin-solana-agent-kit": "workspace:*",
         "@elizaos/plugin-squid-router": "workspace:*",
         "@elizaos/plugin-autonome": "workspace:*",
-        "@elizaos/plugin-starknet": "workspace:*",
+        "@elizaos/plugin-starknet-aurum-usdc": "workspace:*",
         "@elizaos/plugin-story": "workspace:*",
         "@elizaos/plugin-sui": "workspace:*",
         "@elizaos/plugin-sgx": "workspace:*",

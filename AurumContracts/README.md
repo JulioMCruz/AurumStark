@@ -195,9 +195,9 @@ The following smart contracts have been deployed to the Sepolia testnet:
 
 | Contract Name | Address |
 |--------------|---------|
-| AurumUsdc | `0x4922b4de822216955da5b19cb6d2af3f0a4582871af22a1fff1206b354e557` |
-| AurumRewardPoints | `0x5fddd363261b1c6e12211a866a3ce8fe965c63e214db6cab00f9ed575b82883` |
-| AurumReward | `0x325d7ae38b418d84f5e36f9a85e04da06f85704780899e5f842ee2ee8b145dc` |
+| AurumUsdc | `0x040976C636d469331A343a2Fa3E67280663124a5bd7Fc0BC17191ECb847d1E42` |
+| AurumRewardPoints | `0x00386cC559e9033b57Bb9E2Eb85a40f2af43dCfD51fa030C7ff8E4C8Ba2B54d2` |
+| AurumReward | `0x020a6E405F957ee966e6f1309039731F0f1D20A3074C035b08e4cFBfdb711B88` |
 
 Transaction Hash for Deploy Calls: 
 `0x335a845eef08833553d8cfc5369528d7a013dc142fef67fb1ce144455622246`

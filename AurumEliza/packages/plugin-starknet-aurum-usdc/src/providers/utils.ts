@@ -1,5 +1,3 @@
-import { num } from "starknet";
-import type { HolderData } from "../types/trustDB";
 
 export interface TokenMetrics {
     liquidityUsd: bigint;
@@ -76,12 +74,6 @@ export function evaluateTokenTrading(
     };
 }
 
-export interface HolderAnalysisParams {
-    holders: HolderData[];
-    ownerBalance: string;
-    creatorBalance: string;
-    thresholdPercentage?: number;
-}
 
 export interface HolderAnalysisResult {
     count: number;
@@ -90,44 +82,4 @@ export interface HolderAnalysisResult {
         percentage: number;
     }>;
     totalSupply: bigint;
-}
-
-export function analyzeHighSupplyHolders(
-    params: HolderAnalysisParams
-): HolderAnalysisResult {
-    try {
-        const {
-            holders,
-            ownerBalance,
-            creatorBalance,
-            thresholdPercentage = 0.02, // Default threshold of 2%
-        } = params;
-
-        const ownerBalanceBigInt = num.toBigInt(ownerBalance);
-        const totalSupply = ownerBalanceBigInt + num.toBigInt(creatorBalance);
-
-        const highSupplyHolders = holders
-            .map((holder) => {
-                const balance = num.toBigInt(holder.balance);
-                const percentage = Number(balance) / Number(totalSupply);
-                return {
-                    address: holder.address,
-                    percentage,
-                };
-            })
-            .filter((holder) => holder.percentage > thresholdPercentage);
-
-        return {
-            count: highSupplyHolders.length,
-            holders: highSupplyHolders,
-            totalSupply,
-        };
-    } catch (error) {
-        console.error("Error analyzing high supply holders:", error);
-        return {
-            count: 0,
-            holders: [],
-            totalSupply: BigInt(0),
-        };
-    }
 }

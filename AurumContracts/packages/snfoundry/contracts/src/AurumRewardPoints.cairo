@@ -68,4 +68,11 @@ pub mod AurumRewardPoints {
             self.reward_manager.read()
         }
     }
+
+    #[external(v0)]
+    fn set_reward_manager(ref self: ContractState, new_manager: ContractAddress) {
+        // Solo el manager actual puede cambiar el manager
+        self.assert_only_reward_manager();
+        self.reward_manager.write(new_manager);
+    }
 }

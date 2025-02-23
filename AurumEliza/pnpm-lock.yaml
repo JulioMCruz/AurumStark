@@ -469,9 +469,9 @@ importers:
       '@elizaos/plugin-stargaze':
         specifier: workspace:*
         version: link:../packages/plugin-stargaze
-      '@elizaos/plugin-starknet':
+      '@elizaos/plugin-starknet-aurum-usdc':
         specifier: workspace:*
-        version: link:../packages/plugin-starknet
+        version: link:../packages/plugin-starknet-aurum-usdc
       '@elizaos/plugin-story':
         specifier: workspace:*
         version: link:../packages/plugin-story
@@ -4533,7 +4533,7 @@ importers:
         specifier: 1.5.3
         version: 1.5.3
 
-  packages/plugin-starknet:
+  packages/plugin-starknet-aurum-usdc:
     dependencies:
       '@avnu/avnu-sdk':
         specifier: 2.1.1
