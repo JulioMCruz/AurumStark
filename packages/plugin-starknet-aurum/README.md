@@ -1,7 +1,0 @@
-## SmartContracts
-
-![SmartContract](/assets/AurumContracts.svg)
-
-- [AurumUsdc: 0x040976c636d469331a343a2fa3e67280663124a5bd7fc0bc17191ecb847d1e42](https://sepolia.starkscan.co/contract/0x040976c636d469331a343a2fa3e67280663124a5bd7fc0bc17191ecb847d1e42)
-- [AurumPoints: 0x00386cc559e9033b57bb9e2eb85a40f2af43dcfd51fa030c7ff8e4c8ba2b54d2](https://sepolia.starkscan.co/contract/0x00386cc559e9033b57bb9e2eb85a40f2af43dcfd51fa030c7ff8e4c8ba2b54d2#overview)
-- [AurumReward: 0x020a6e405f957ee966e6f1309039731f0f1d20a3074c035b08e4cfbfdb711b88](https://sepolia.starkscan.co/contract/0x020a6e405f957ee966e6f1309039731f0f1d20a3074c035b08e4cfbfdb711b88)
