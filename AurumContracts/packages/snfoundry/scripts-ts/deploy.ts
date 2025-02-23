@@ -7,14 +7,30 @@ import {
 import { green } from "./helpers/colorize-log";
 
 const deployScript = async (): Promise<void> => {
-  // Deploy AurumUsdc with initial supply of 1 million USDC (6 decimals)
+  // 1. Deploy USDC token first
   const initialSupply = BigInt(1000000) * BigInt(10 ** 6); // 1M USDC with 6 decimals
-  
-  await deployContract({
+  const usdcDeployment = await deployContract({
     contract: "AurumUsdc",
     constructorArgs: {
       initial_supply: initialSupply,
       recipient: deployer.address,
+    },
+  });
+
+  // 2. Deploy AurumRewardPoints (will be managed by AurumReward)
+  const rewardPointsDeployment = await deployContract({
+    contract: "AurumRewardPoints",
+    constructorArgs: {
+      reward_manager: deployer.address, // Temporarily set to deployer, will update after AurumReward deployment
+    },
+  });
+
+  // 3. Deploy AurumReward
+  await deployContract({
+    contract: "AurumReward",
+    constructorArgs: {
+      usdc_address: usdcDeployment.address,
+      reward_points_address: rewardPointsDeployment.address,
     },
   });
 };

@@ -189,6 +189,21 @@ You have to paste the endpoint and body in the API platform and click on the `Se
 ![rpc-version](./packages/nextjs/public/rpc-version.png)
 </details>
 
+## Deployed Contracts (Sepolia Testnet)
+
+The following smart contracts have been deployed to the Sepolia testnet:
+
+| Contract Name | Address |
+|--------------|---------|
+| AurumUsdc | `0x4922b4de822216955da5b19cb6d2af3f0a4582871af22a1fff1206b354e557` |
+| AurumRewardPoints | `0x5fddd363261b1c6e12211a866a3ce8fe965c63e214db6cab00f9ed575b82883` |
+| AurumReward | `0x325d7ae38b418d84f5e36f9a85e04da06f85704780899e5f842ee2ee8b145dc` |
+
+Transaction Hash for Deploy Calls: 
+`0x335a845eef08833553d8cfc5369528d7a013dc142fef67fb1ce144455622246`
+
+> Note: These contracts were deployed using STRK as the fee token since the deployer account had zero ETH balance.
+
 ## **What's next**
 
 - Edit your smart contract `YourContract.cairo` in `packages/snfoundry/contracts/src`
