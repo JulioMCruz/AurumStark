@@ -1279,6 +1279,7 @@ export async function createAgent(
                 : null,
             getSecret(character, "MINA_PRIVATE_KEY") ? minaPlugin : null,
             getSecret(character, "FORM_PRIVATE_KEY") ? formPlugin : null,
+            getSecret(character, "STARKNET_AURUM_PRIVATE_KEY") ? starknetAurumPlugin : null,
             getSecret(character, "ANKR_WALLET") ? ankrPlugin : null,
             getSecret(character, "DCAP_EVM_PRIVATE_KEY") &&
             getSecret(character, "DCAP_MODE")

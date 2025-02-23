@@ -39,7 +39,7 @@ export interface AurumRewardEvent {
     };
 }
 
-export class ERC20Token {
+export class AurumRewardToken {
     abi: Abi;
     contract: Contract;
     calldata: CallData;
@@ -86,17 +86,6 @@ export class ERC20Token {
             entrypoint: "approve",
             calldata: this.calldata.compile("approve", {
                 spender: spender,
-                amount: cairo.uint256(amount),
-            }),
-        };
-    }
-
-    public transferCall(recipient: string, amount: bigint): TransferCall {
-        return {
-            contractAddress: this.contract.address,
-            entrypoint: "transfer",
-            calldata: this.calldata.compile("transfer", {
-                recipient: recipient,
                 amount: cairo.uint256(amount),
             }),
         };
@@ -150,10 +139,10 @@ export class ERC20Token {
     public static readonly POINTS_MULTIPLIER = 10n;
 
     public calculateFee(amount: bigint): bigint {
-        return amount / ERC20Token.REWARD_RATE;
+        return amount / AurumRewardToken.REWARD_RATE;
     }
 
     public calculatePoints(feeAmount: bigint): bigint {
-        return feeAmount * ERC20Token.POINTS_MULTIPLIER;
+        return feeAmount * AurumRewardToken.POINTS_MULTIPLIER;
     }
-}
+} 
