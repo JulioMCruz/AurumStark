@@ -24,8 +24,8 @@ pub mod AurumUsdc {
 
     #[constructor]
     fn constructor(ref self: ContractState, initial_supply: u256, recipient: ContractAddress) {
-        let name = "USD Coin";
-        let symbol = "USDC";
+        let name = "AU USD Coin";
+        let symbol = "AU USDC";
 
         self.erc20.initializer(name, symbol);
         self.erc20.mint(recipient, initial_supply);

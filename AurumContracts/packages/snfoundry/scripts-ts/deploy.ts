@@ -26,13 +26,25 @@ const deployScript = async (): Promise<void> => {
   });
 
   // 3. Deploy AurumReward
-  await deployContract({
+  const rewardDeployment = await deployContract({
     contract: "AurumReward",
     constructorArgs: {
       usdc_address: usdcDeployment.address,
       reward_points_address: rewardPointsDeployment.address,
     },
   });
+
+  // 4. Update reward_manager in AurumRewardPoints
+  // TODO: FIX
+  /**
+   *  Error in the called contract (contract address: 0x053600188f3fe9d6b426f45e5bd6f50209ed444d416913369f2776b27d0013f2, class hash: 0x0000000000000000000000000000000000000000000000000000000000000000, selector: 0x03c79e1eb9c3041bf771d2033e3789a9606f91a5548aa0e26dbe0ac11427df19):\n' +
+        'Requested contract address 0x053600188f3fe9d6b426f45e5bd6f50209ed444d416913369f2776b27d0013f2 is not deployed.
+   */
+  // await deployer.execute([{
+  //   contractAddress: rewardPointsDeployment.address,
+  //   entrypoint: "set_reward_manager",
+  //   calldata: [rewardDeployment.address]
+  // }]);
 };
 
 deployScript()

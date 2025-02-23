@@ -7,7 +7,7 @@ const deployedContracts = {
   devnet: {
     AurumUsdc: {
       address:
-        "0x656818b8f6d92cce05820142aa82edb1ed1e2d6b4684fed56e2ecdca33aac04",
+        "0x1b129e0c179941c229c176ead61df651abb5de351aaab21cc6cc12bc76316e4",
       abi: [
         {
           type: "impl",
@@ -350,11 +350,11 @@ const deployedContracts = {
         },
       ],
       classHash:
-        "0x26725331bb34f936f8ea7c1345113c43ab05ce2ad2a23214262ce8d918d5808",
+        "0x492f230d2f9ea7c2e0a5bcbe80f10e757f5722af4ad3f2d41bf0a330f7ab24c",
     },
     AurumRewardPoints: {
       address:
-        "0xcae6ff17b96f75a567f26e1f6c65e2e0dc4fe0682b26cba1c6a67703196a2e",
+        "0x14d6f93b5475aa2da4c8ed62a3dd37557deec6b225169e59c11d51cc740ee6",
       abi: [
         {
           type: "impl",
@@ -657,6 +657,18 @@ const deployedContracts = {
           ],
         },
         {
+          type: "function",
+          name: "set_reward_manager",
+          inputs: [
+            {
+              name: "new_manager",
+              type: "core::starknet::contract_address::ContractAddress",
+            },
+          ],
+          outputs: [],
+          state_mutability: "external",
+        },
+        {
           type: "event",
           name: "openzeppelin_token::erc20::erc20::ERC20Component::Transfer",
           kind: "struct",
@@ -753,11 +765,11 @@ const deployedContracts = {
         },
       ],
       classHash:
-        "0x6f0d8c42bfa7e169a34ceab089826fdc5d646c13d21bcfb63624c1fa468bcdd",
+        "0x2fcc3379a150865242f2e5ff96841e5a8489b273d6103eb940f6edf32fab86c",
     },
     AurumReward: {
       address:
-        "0x7fd40fad628a01040072fc56f245ce613f914a07d19ff3dbb394f74d51d221c",
+        "0x396011eccd400404e3acd65e1c76c15cf4b768aa341fda7bbe4b2298d1f7fda",
       abi: [
         {
           type: "impl",
@@ -910,7 +922,7 @@ const deployedContracts = {
   sepolia: {
     AurumUsdc: {
       address:
-        "0x4922b4de822216955da5b19cb6d2af3f0a4582871af22a1fff1206b354e557",
+        "0x40976c636d469331a343a2fa3e67280663124a5bd7fc0bc17191ecb847d1e42",
       abi: [
         {
           type: "impl",
@@ -1253,11 +1265,11 @@ const deployedContracts = {
         },
       ],
       classHash:
-        "0x26725331bb34f936f8ea7c1345113c43ab05ce2ad2a23214262ce8d918d5808",
+        "0x492f230d2f9ea7c2e0a5bcbe80f10e757f5722af4ad3f2d41bf0a330f7ab24c",
     },
     AurumRewardPoints: {
       address:
-        "0x5fddd363261b1c6e12211a866a3ce8fe965c63e214db6cab00f9ed575b82883",
+        "0x386cc559e9033b57bb9e2eb85a40f2af43dcfd51fa030c7ff8e4c8ba2b54d2",
       abi: [
         {
           type: "impl",
@@ -1560,6 +1572,18 @@ const deployedContracts = {
           ],
         },
         {
+          type: "function",
+          name: "set_reward_manager",
+          inputs: [
+            {
+              name: "new_manager",
+              type: "core::starknet::contract_address::ContractAddress",
+            },
+          ],
+          outputs: [],
+          state_mutability: "external",
+        },
+        {
           type: "event",
           name: "openzeppelin_token::erc20::erc20::ERC20Component::Transfer",
           kind: "struct",
@@ -1656,11 +1680,11 @@ const deployedContracts = {
         },
       ],
       classHash:
-        "0x6f0d8c42bfa7e169a34ceab089826fdc5d646c13d21bcfb63624c1fa468bcdd",
+        "0x2fcc3379a150865242f2e5ff96841e5a8489b273d6103eb940f6edf32fab86c",
     },
     AurumReward: {
       address:
-        "0x325d7ae38b418d84f5e36f9a85e04da06f85704780899e5f842ee2ee8b145dc",
+        "0x20a6e405f957ee966e6f1309039731f0f1d20a3074c035b08e4cfbfdb711b88",
       abi: [
         {
           type: "impl",
