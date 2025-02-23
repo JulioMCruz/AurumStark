@@ -1,6 +1,10 @@
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { BarChart2, DollarSign, Settings, User, CreditCard } from "lucide-react"
+import {
+  DynamicContextProvider,
+  DynamicWidget,
+} from "@dynamic-labs/sdk-react-core";
 
 export function MerchantHeader() {
   return (
@@ -40,6 +44,7 @@ export function MerchantHeader() {
               Profile
             </Button>
           </Link>
+          <DynamicWidget />
         </nav>
       </div>
     </header>

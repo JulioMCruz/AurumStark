@@ -1,13 +1,18 @@
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { MessageSquare, CreditCard, User, Send, FileText } from "lucide-react"
+import {
+  DynamicContextProvider,
+  DynamicWidget,
+} from "@dynamic-labs/sdk-react-core";
+
 
 export function CustomerHeader() {
   return (
     <header className="bg-secondary/50 backdrop-blur-sm border-b border-border">
       <div className="container mx-auto px-4 py-4 flex items-center justify-between">
         <Link href="/" className="text-2xl font-bold text-gradient">
-          AurumStark Customer
+          Aurum Stark Customer
         </Link>
         <nav className="flex items-center space-x-4">
           <Link href="/customer/chat">
@@ -40,7 +45,8 @@ export function CustomerHeader() {
               Profile
             </Button>
           </Link>
-        </nav>
+          <DynamicWidget />
+          </nav>
       </div>
     </header>
   )
