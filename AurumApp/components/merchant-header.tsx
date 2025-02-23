@@ -5,8 +5,30 @@ import {
   DynamicContextProvider,
   DynamicWidget,
 } from "@dynamic-labs/sdk-react-core";
+import { useRouter } from "next/router";
+import { useIsLoggedIn, useDynamicContext } from "@dynamic-labs/sdk-react-core";  
 
 export function MerchantHeader() {
+
+  const router = useRouter();
+
+  const isLoggedIn = useIsLoggedIn();
+  const { handleLogOut, setShowAuthFlow } = useDynamicContext()
+
+  function login() {
+    if (!isLoggedIn) {
+        setShowAuthFlow(true)
+    } else {
+      //toast.warning('user is already logged in')
+    }
+  }
+
+  async function logout() {
+    await handleLogOut()
+    router.push('/')
+    //setIsMenuOpen?.(false)
+  }
+
   return (
     <header className="bg-secondary/50 backdrop-blur-sm border-b border-border">
       <div className="container mx-auto px-4 py-4 flex items-center justify-between">
@@ -44,7 +66,24 @@ export function MerchantHeader() {
               Profile
             </Button>
           </Link>
-          <DynamicWidget />
+
+          { !isLoggedIn && (
+            <Button 
+                onClick={login} >
+                Launch App
+            </Button>
+          )}
+
+          { isLoggedIn && (
+            <>
+              <DynamicWidget />
+              <Button
+                onClick={logout} >
+                Logout
+                </Button>
+            </>
+            )}
+                      
         </nav>
       </div>
     </header>

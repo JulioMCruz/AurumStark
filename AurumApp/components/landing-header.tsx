@@ -78,7 +78,6 @@ export function LandingHeader() {
                 Logout
                 </Button>
             </>
-
             )}
 
         </nav>
