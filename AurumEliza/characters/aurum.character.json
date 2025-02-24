@@ -1,4 +1,5 @@
 {
+    "id": "b6657537-8229-08d6-9c14-ec2eacf79b64",
     "name": "Aurum",
     "clients": ["direct"],
     "modelProvider": "anthropic",
