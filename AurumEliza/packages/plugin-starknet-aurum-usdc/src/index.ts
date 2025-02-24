@@ -3,7 +3,7 @@ import { Provider, RpcProvider } from 'starknet';
 import { StarknetAurumUsdcProvider } from './providers/AurumUsdcProvider';
 import { GetBalanceAction, TransferAction } from "./actions";
 
-export function createAurumUsdcPlugin(provider: Provider, network: 'devnet' | 'sepolia' = 'devnet'): Plugin {
+export function createAurumUsdcPlugin(provider: Provider, network: 'devnet' | 'sepolia' = 'sepolia'): Plugin {
     const aurumUsdcProvider = new StarknetAurumUsdcProvider(provider, network);
     elizaLogger.info("Aurum Usdc Provider created");
     // Crear y retornar el plugin

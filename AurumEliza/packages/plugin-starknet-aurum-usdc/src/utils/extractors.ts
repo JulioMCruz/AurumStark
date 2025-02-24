@@ -9,8 +9,8 @@
  * @throws Error if no valid address is found
  */
 export function extractAddress(text: string): string {
-    const match = text.match(/0x[a-fA-F0-9]{40}/);
-    if (!match) throw new Error('No valid address found in text');
+    const match = text.match(/0x[a-fA-F0-9]{64}/);
+    if (!match) throw new Error('No valid Starknet address found in text');
     return match[0];
 }
 

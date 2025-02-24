@@ -1,6 +1,7 @@
 import { Action, IAgentRuntime, elizaLogger, HandlerCallback, State } from '@elizaos/core';
 import { AurumUsdcProvider, Message } from '../../types/AurumUsdc';
 import { extractAddress, extractAmount, extractCurrency } from '../../utils/extractors';
+import { num } from 'starknet';
 import examples from './examples';
 
 export class TransferAction implements Action {
@@ -21,10 +22,61 @@ export class TransferAction implements Action {
         this.provider = provider;
     }
 
-    async validate(_runtime: IAgentRuntime, message: Message): Promise<boolean> {
-        const hasValidAddress = /0x[a-fA-F0-9]{40}/.test(message.content?.to || message.content?.text || '');
-        const hasAmount = /\d+(\.\d+)?/.test(message.content?.amount || message.content?.text || '');
-        return hasValidAddress && hasAmount;
+    async validate(runtime: IAgentRuntime, message: Message): Promise<boolean> {
+        try {
+            // Validar dirección Starknet (64 caracteres)
+            const hasValidAddress = /0x[a-fA-F0-9]{64}/.test(message.content?.to || message.content?.text || '');
+            const hasAmount = /\d+(\.\d+)?/.test(message.content?.amount || message.content?.text || '');
+            
+            if (!hasValidAddress || !hasAmount) {
+                return false;
+            }
+
+            // // Validar que el contrato está disponible y responde
+            // await this.contract.version();
+            
+            return true;
+        } catch (error) {
+            elizaLogger.error("🔴 Validation failed:", error);
+            return false;
+        }
+    }
+
+    private async convertAndScaleAmount(
+        amount: string,
+        currency: string,
+        decimals: number
+    ): Promise<bigint> {
+        try {
+            const usdcAmount = currency === 'USDC' 
+                ? amount 
+                : await this.provider.convertToUSDC(amount, currency);
+            
+            // Convertir a la precisión correcta de decimales
+            const scaledAmount = BigInt(
+                Math.floor(parseFloat(usdcAmount) * Math.pow(10, decimals))
+            );
+            
+            return scaledAmount;
+        } catch (error) {
+            throw new Error(`Error converting amount: ${error.message}`);
+        }
+    }
+
+    private async executeWithRetry(
+        fn: () => Promise<boolean>,
+        maxAttempts = 3
+    ): Promise<boolean> {
+        for (let i = 0; i < maxAttempts; i++) {
+            try {
+                return await fn();
+            } catch (error) {
+                if (i === maxAttempts - 1) throw error;
+                await new Promise(resolve => setTimeout(resolve, Math.pow(2, i) * 1000));
+                elizaLogger.warn(`Retry attempt ${i + 1} of ${maxAttempts}`);
+            }
+        }
+        return false;
     }
 
     async handler(
@@ -35,36 +87,71 @@ export class TransferAction implements Action {
         callback?: HandlerCallback
     ): Promise<boolean> {
         try {
-            const to = message.content.to || extractAddress(message.content.text || '');
-            const amount = message.content.amount || extractAmount(message.content.text || '');
-            const currency = message.content.currency || extractCurrency(message.content.text || '');
+            // // Obtener el contrato y sus decimales
+            // const decimals = await this.contract.decimals();
+
+            // // Extraer y validar parámetros
+            // const to = message.content.to || extractAddress(message.content.text || '');
+            // const amount = message.content.amount || extractAmount(message.content.text || '');
+            // const currency = message.content.currency || extractCurrency(message.content.text || '');
+
+            // // Validar balance
+            // const senderAddress = await this.provider.getAddress();
+            // const balance = await this.contract.balanceOf(senderAddress);
+            // const scaledAmount = await this.convertAndScaleAmount(amount, currency, decimals);
             
-            // Get exchange rate and convert if needed
-            const usdcAmount = currency === 'USDC' ? amount : await this.provider.convertToUSDC(amount, currency);
+            // if (balance < scaledAmount) {
+            //     throw new Error('Insufficient balance for transfer');
+            // }
+
+            // // Ejecutar transferencia con reintentos
+            // const success = await this.executeWithRetry(async () => {
+            //     return await this.provider.transfer(to, num.toHex(scaledAmount));
+            // });
+
+            // if (success) {
+            //     // Calcular puntos de recompensa (0.1 puntos por USDC)
+            //     const rewardPoints = parseFloat(amount) * 0.1;
+
+            //     if (callback) {
+            //         callback({
+            //             text: `¡Transferencia completada exitosamente! Has ganado ${rewardPoints.toFixed(3)} puntos Aurum.`,
+            //             content: {
+            //                 to,
+            //                 amount: scaledAmount.toString(),
+            //                 originalAmount: amount,
+            //                 originalCurrency: currency,
+            //                 rewardPoints,
+            //                 status: 'success'
+            //             }
+            //         });
+            //     }
+                
+            //     elizaLogger.success(`✅ Transfer successful: ${amount} USDC to ${to}`);
+            //     return true;
+            // } else {
+            //     throw new Error('Transfer failed');
+            // }
+        } catch (error) {
+            elizaLogger.error("🔴 TransferAction error:", error);
             
-            // Calculate reward points (0.1 points per USDC)
-            const rewardPoints = parseFloat(usdcAmount) * 0.1;
-            
-            // Execute transfer
-            const success = await this.provider.transfer(to, usdcAmount.toString());
-            
-            if (success && callback) {
+            if (callback) {
+                let errorMessage = 'Error en la transferencia';
+                if (error.message.includes('Insufficient balance')) {
+                    errorMessage = 'Saldo insuficiente para realizar la transferencia';
+                } else if (error.message.includes('Contract not found')) {
+                    errorMessage = 'Contrato no encontrado en la red actual';
+                }
+                
                 callback({
-                    text: `Transaction completed successfully! You've earned ${rewardPoints.toFixed(3)} Aurum points.`,
+                    text: errorMessage,
                     content: {
-                        to,
-                        amount: usdcAmount,
-                        originalAmount: amount,
-                        originalCurrency: currency,
-                        rewardPoints,
-                        status: 'success'
+                        status: 'failed',
+                        error: error.message
                     }
                 });
             }
             
-            return success;
-        } catch (error) {
-            elizaLogger.error("🔴 TransferAction error:", error);
             return false;
         }
     }
