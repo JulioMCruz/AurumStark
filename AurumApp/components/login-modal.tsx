@@ -41,6 +41,7 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
   const [showOTP, setShowOTP] = useState(false)
   const [showEmailOTP, setShowEmailOTP] = useState(false)
   const [emailOTP, setEmailOTP] = useState("")
+  const [confirmPassword, setConfirmPassword] = useState("")
   const router = useRouter()
 
   useEffect(() => {
@@ -146,11 +147,51 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
 
   const handleEmailSignUp = async (e: React.FormEvent) => {
     e.preventDefault()
+    
+    if (password !== confirmPassword) {
+      toast.error("Passwords do not match")
+      return
+    }
+    
+    if (password.length < 6) {
+      toast.error("Password must be at least 6 characters long")
+      return
+    }
+    
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password)
-      handleSuccessfulLogin(userCredential.user)
-    } catch (error) {
-      console.error("Error signing up with email and password", error)
+      await handleSendEmailVerification(userCredential.user)
+      
+      // Clear form fields
+      setEmail("")
+      setPassword("")
+      setConfirmPassword("")
+      
+      // Show success message and guide user to login
+      toast.success(
+        "Account created successfully! Please check your email for verification and then login with your credentials.",
+        {
+          duration: 5000
+        }
+      )
+      
+      // Switch back to login tab after a short delay
+      setTimeout(() => {
+        const loginTrigger = document.querySelector('[value="login"]') as HTMLButtonElement
+        if (loginTrigger) loginTrigger.click()
+      }, 1000)
+      
+    } catch (error: any) {
+      console.error("Error signing up:", error)
+      if (error.code === "auth/email-already-in-use") {
+        toast.error("Email already in use")
+      } else if (error.code === "auth/invalid-email") {
+        toast.error("Invalid email address")
+      } else if (error.code === "auth/weak-password") {
+        toast.error("Password is too weak")
+      } else {
+        toast.error("Failed to create account")
+      }
     }
   }
 
@@ -277,59 +318,113 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
               <TabsTrigger value="google">Google</TabsTrigger>
             </TabsList>
             <TabsContent value="email">
-              {!showEmailOTP ? (
-                <form onSubmit={handleEmailLogin} className="space-y-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="email">Email</Label>
-                    <Input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="password">Password</Label>
-                    <Input
-                      id="password"
-                      type="password"
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                      required
-                    />
-                  </div>
-                  <Button type="submit" className="w-full button-gradient">
-                    Login
-                  </Button>
-                </form>
-              ) : (
-                <div className="space-y-4">
-                  <div className="space-y-2">
-                    <Label>Enter verification code sent to your email</Label>
-                    <InputOTP
-                      value={emailOTP}
-                      onChange={setEmailOTP}
-                      maxLength={6}
+              <Tabs defaultValue="login" className="w-full">
+                <TabsList className="grid w-full grid-cols-2 mb-4">
+                  <TabsTrigger value="login">Login</TabsTrigger>
+                  <TabsTrigger value="signup">Sign Up</TabsTrigger>
+                </TabsList>
+
+                <TabsContent value="login">
+                  {!showEmailOTP ? (
+                    <form onSubmit={handleEmailLogin} className="space-y-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="email">Email</Label>
+                        <Input 
+                          id="email" 
+                          type="email" 
+                          value={email} 
+                          onChange={(e) => setEmail(e.target.value)} 
+                          required 
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="password">Password</Label>
+                        <Input
+                          id="password"
+                          type="password"
+                          value={password}
+                          onChange={(e) => setPassword(e.target.value)}
+                          required
+                        />
+                      </div>
+                      <Button type="submit" className="w-full button-gradient">
+                        Login
+                      </Button>
+                    </form>
+                  ) : (
+                    <div className="space-y-4">
+                      <div className="space-y-2">
+                        <Label>Enter verification code sent to your email</Label>
+                        <InputOTP
+                          value={emailOTP}
+                          onChange={setEmailOTP}
+                          maxLength={6}
+                        >
+                          <InputOTPGroup>
+                            <InputOTPSlot index={0} />
+                            <InputOTPSlot index={1} />
+                            <InputOTPSlot index={2} />
+                            <InputOTPSlot index={3} />
+                            <InputOTPSlot index={4} />
+                            <InputOTPSlot index={5} />
+                          </InputOTPGroup>
+                        </InputOTP>
+                      </div>
+                      <Button 
+                        onClick={handleVerifyEmailOTP} 
+                        className="w-full button-gradient"
+                        disabled={emailOTP.length !== 6}
+                      >
+                        Verify Code
+                      </Button>
+                    </div>
+                  )}
+                </TabsContent>
+
+                <TabsContent value="signup">
+                  <form onSubmit={handleEmailSignUp} className="space-y-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="signupEmail">Email</Label>
+                      <Input 
+                        id="signupEmail" 
+                        type="email" 
+                        value={email} 
+                        onChange={(e) => setEmail(e.target.value)} 
+                        required 
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="signupPassword">Password</Label>
+                      <Input
+                        id="signupPassword"
+                        type="password"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        required
+                        minLength={6}
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="confirmPassword">Confirm Password</Label>
+                      <Input
+                        id="confirmPassword"
+                        type="password"
+                        value={confirmPassword}
+                        onChange={(e) => setConfirmPassword(e.target.value)}
+                        required
+                        minLength={6}
+                      />
+                    </div>
+                    <Button 
+                      type="submit" 
+                      className="w-full button-gradient"
+                      disabled={password !== confirmPassword || !password || !email}
                     >
-                      <InputOTPGroup>
-                        <InputOTPSlot index={0} />
-                        <InputOTPSlot index={1} />
-                        <InputOTPSlot index={2} />
-                        <InputOTPSlot index={3} />
-                        <InputOTPSlot index={4} />
-                        <InputOTPSlot index={5} />
-                      </InputOTPGroup>
-                    </InputOTP>
-                  </div>
-                  <Button 
-                    onClick={handleVerifyEmailOTP} 
-                    className="w-full button-gradient"
-                    disabled={emailOTP.length !== 6}
-                  >
-                    Verify Code
-                  </Button>
-                </div>
-              )}
-              <div className="mt-4">
-                <Button onClick={handleEmailSignUp} variant="outline" className="w-full">
-                  Sign Up
-                </Button>
-              </div>
+                      Create Account
+                    </Button>
+                  </form>
+                </TabsContent>
+              </Tabs>
             </TabsContent>
             <TabsContent value="phone">
               <form onSubmit={handlePhoneLogin} className="space-y-4">
