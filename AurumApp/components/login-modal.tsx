@@ -39,8 +39,6 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
   const [verificationCode, setVerificationCode] = useState("")
   const [verificationId, setVerificationId] = useState("")
   const [showOTP, setShowOTP] = useState(false)
-  const [showEmailOTP, setShowEmailOTP] = useState(false)
-  const [emailOTP, setEmailOTP] = useState("")
   const [confirmPassword, setConfirmPassword] = useState("")
   const router = useRouter()
 
@@ -115,18 +113,20 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
 
   const handleSendEmailVerification = async (user: any) => {
     try {
-      // Configure the action code settings
       const actionCodeSettings = {
-        url: `${window.location.origin}/verify-email`, // URL to redirect to after verification
-        handleCodeInApp: true
+        url: `${window.location.origin}/verify-email`,
+        handleCodeInApp: false // Changed to false since we're using link verification
       }
 
       await sendEmailVerification(user, actionCodeSettings)
-      setShowEmailOTP(true)
-      toast.success("Verification code sent to your email!")
+      onClose() // Close the modal after sending verification email
+      toast.success(
+        "Verification email sent! Please check your inbox and click the verification link.",
+        { duration: 5000 }
+      )
     } catch (error) {
       console.error("Error sending verification email:", error)
-      toast.error("Failed to send verification code")
+      toast.error("Failed to send verification email")
     }
   }
 
@@ -255,66 +255,18 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
     }
   }
 
-  const handleVerifyEmailOTP = async () => {
-    try {
-      if (emailOTP.length !== 6) {
-        toast.error("Please enter a valid verification code")
-        return
-      }
-
-      // Get the current user
-      const currentUser = auth.currentUser
-      if (!currentUser) {
-        toast.error("No user found. Please try logging in again")
-        return
-      }
-
-      // Verify the action code (OTP)
-      try {
-        // First check if the code is valid
-        await checkActionCode(auth, emailOTP)
-        
-        // Apply the verification code
-        await applyActionCode(auth, emailOTP)
-        
-        // Reload the user to get updated email verification status
-        await currentUser.reload()
-        
-        // Check if email is now verified
-        if (currentUser.emailVerified) {
-          toast.success("Email verified successfully!")
-          handleSuccessfulLogin(currentUser)
-        } else {
-          throw new Error("Email verification failed")
-        }
-      } catch (error) {
-        console.error("Error verifying email:", error)
-        toast.error("Invalid verification code. Please try again.")
-        
-        // If verification fails, send a new code
-        if (currentUser) {
-          await handleSendEmailVerification(currentUser)
-          toast.info("A new verification code has been sent to your email")
-        }
-      }
-    } catch (error) {
-      console.error("Error in email verification process:", error)
-      toast.error("Verification failed. Please try again.")
-    }
-  }
-
   return (
     <>
-      <div id="recaptcha-container"></div>
+      <div id="recaptcha-container" className="hidden"></div>
       <Dialog open={isOpen} onOpenChange={onClose}>
         <DialogContent className="sm:max-w-[425px]">
           <DialogHeader>
             <DialogTitle className="text-2xl font-bold text-gradient">Login to AurumStark</DialogTitle>
           </DialogHeader>
           <Tabs defaultValue="email" className="w-full">
-            <TabsList className="grid w-full grid-cols-3">
+            <TabsList className="grid w-full grid-cols-2">
               <TabsTrigger value="email">Email</TabsTrigger>
-              <TabsTrigger value="phone">Phone</TabsTrigger>
+              {/* <TabsTrigger value="phone">Phone</TabsTrigger> */}
               <TabsTrigger value="google">Google</TabsTrigger>
             </TabsList>
             <TabsContent value="email">
@@ -325,60 +277,31 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
                 </TabsList>
 
                 <TabsContent value="login">
-                  {!showEmailOTP ? (
-                    <form onSubmit={handleEmailLogin} className="space-y-4">
-                      <div className="space-y-2">
-                        <Label htmlFor="email">Email</Label>
-                        <Input 
-                          id="email" 
-                          type="email" 
-                          value={email} 
-                          onChange={(e) => setEmail(e.target.value)} 
-                          required 
-                        />
-                      </div>
-                      <div className="space-y-2">
-                        <Label htmlFor="password">Password</Label>
-                        <Input
-                          id="password"
-                          type="password"
-                          value={password}
-                          onChange={(e) => setPassword(e.target.value)}
-                          required
-                        />
-                      </div>
-                      <Button type="submit" className="w-full button-gradient">
-                        Login
-                      </Button>
-                    </form>
-                  ) : (
-                    <div className="space-y-4">
-                      <div className="space-y-2">
-                        <Label>Enter verification code sent to your email</Label>
-                        <InputOTP
-                          value={emailOTP}
-                          onChange={setEmailOTP}
-                          maxLength={6}
-                        >
-                          <InputOTPGroup>
-                            <InputOTPSlot index={0} />
-                            <InputOTPSlot index={1} />
-                            <InputOTPSlot index={2} />
-                            <InputOTPSlot index={3} />
-                            <InputOTPSlot index={4} />
-                            <InputOTPSlot index={5} />
-                          </InputOTPGroup>
-                        </InputOTP>
-                      </div>
-                      <Button 
-                        onClick={handleVerifyEmailOTP} 
-                        className="w-full button-gradient"
-                        disabled={emailOTP.length !== 6}
-                      >
-                        Verify Code
-                      </Button>
+                  <form onSubmit={handleEmailLogin} className="space-y-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="email">Email</Label>
+                      <Input 
+                        id="email" 
+                        type="email" 
+                        value={email} 
+                        onChange={(e) => setEmail(e.target.value)} 
+                        required 
+                      />
                     </div>
-                  )}
+                    <div className="space-y-2">
+                      <Label htmlFor="password">Password</Label>
+                      <Input
+                        id="password"
+                        type="password"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        required
+                      />
+                    </div>
+                    <Button type="submit" className="w-full button-gradient">
+                      Login
+                    </Button>
+                  </form>
                 </TabsContent>
 
                 <TabsContent value="signup">
@@ -426,7 +349,7 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
                 </TabsContent>
               </Tabs>
             </TabsContent>
-            <TabsContent value="phone">
+            {/* <TabsContent value="phone">
               <form onSubmit={handlePhoneLogin} className="space-y-4">
                 <div className="space-y-2">
                   <Label htmlFor="phone">Phone Number</Label>
@@ -464,7 +387,7 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
                 className="invisible"
                 aria-hidden="true"
               ></div>
-            </TabsContent>
+            </TabsContent> */}
             <TabsContent value="google">
               <Button onClick={handleGoogleLogin} className="w-full" variant="outline">
                 <FcGoogle className="mr-2 h-4 w-4" />
