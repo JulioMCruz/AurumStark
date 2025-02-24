@@ -1,43 +1,53 @@
-import { Provider, Contract, cairo, BigNumberish } from 'starknet';
-import { AurumUsdcContract, AurumUsdcProvider } from '../types/AurumUsdc';
-import { deployedContracts } from '../utils/contracts';
+import { AccountInterface, ProviderInterface } from 'starknet';
+import { AurumUsdcContract } from '../contracts/AurumUsdcContract';
+import { AurumUsdcProvider as IAurumUsdcProvider } from '../types/AurumUsdc';
 
-export class StarknetAurumUsdcProvider implements AurumUsdcProvider {
-    private contract: Contract;
-    private contractAddress: string;
+export class AurumUsdcProvider implements IAurumUsdcProvider {
+    private contract: AurumUsdcContract;
+    private account: AccountInterface;
 
-    constructor(provider: Provider, network: 'devnet' | 'sepolia' = 'devnet') {
-        this.contractAddress = deployedContracts[network].AurumUsdc.address;
-        this.contract = new Contract(
-            deployedContracts[network].AurumUsdc.abi,
-            this.contractAddress,
-            provider
-        );
+    constructor(
+        contractAddress: string,
+        account: AccountInterface
+    ) {
+        this.account = account;
+        this.contract = new AurumUsdcContract(contractAddress, account);
     }
 
-    async getContract(): Promise<AurumUsdcContract> {
-        return this.contract as unknown as AurumUsdcContract;
+    public getAddress(): string {
+        return this.account.address;
     }
 
-    getAddress(): string {
-        return this.contractAddress;
-    }
-
-    async getBalance(address: string): Promise<string> {
-        const contract = await this.getContract();
-        const balance = await contract.balanceOf(address);
-        return balance.toString();
-    }
-
-    async getBalanceFormatted(address: string): Promise<string> {
-        const contract = await this.getContract();
-        const balance = await contract.getBalanceFormatted(address);
+    public async getBalance(address: string): Promise<string> {
+        const balance = await this.contract.getBalanceFormatted(address);
         return balance;
     }
 
-    async transfer(to: string, amount: string): Promise<boolean> {
-        const contract = await this.getContract();
-        const uint = cairo.uint256(BigInt(amount)) as any;
-        return contract.transfer(to, uint);
+    public async transfer(to: string, amount: string): Promise<boolean> {
+        try {
+            // Obtener los decimales del contrato
+            const decimals = await this.contract.decimals();
+            
+            // Convertir el amount a la precisión correcta
+            const scaledAmount = BigInt(
+                Math.floor(parseFloat(amount) * Math.pow(10, decimals))
+            );
+
+            // Realizar la transferencia
+            const success = await this.contract.transfer(to, scaledAmount);
+            
+            if (!success) {
+                throw new Error('Transfer failed');
+            }
+
+            return true;
+        } catch (error) {
+            console.error('Transfer error:', error);
+            return false;
+        }
     }
-} 
+
+    public async convertToUSDC(amount: string, fromCurrency: string): Promise<string> {
+        return this.contract.convertToUSDC(amount, fromCurrency);
+    }
+}
