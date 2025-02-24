@@ -1,7 +1,7 @@
 import { elizaLogger, Plugin } from "@elizaos/core";
 import { Provider, RpcProvider } from 'starknet';
 import { StarknetAurumUsdcProvider } from './providers/AurumUsdcProvider';
-import { GetBalanceAction, TransferAction } from './actions/AurumUsdcActions';
+import { GetBalanceAction, TransferAction } from "./actions";
 
 export function createAurumUsdcPlugin(provider: Provider, network: 'devnet' | 'sepolia' = 'devnet'): Plugin {
     const aurumUsdcProvider = new StarknetAurumUsdcProvider(provider, network);
