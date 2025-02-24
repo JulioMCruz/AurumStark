@@ -1,173 +1,104 @@
-# @elizaos/plugin-starknet
+# @elizaos/plugin-starknet-aurum-usdc
 
-Core Starknet blockchain plugin for Eliza OS that provides essential services and actions for token operations, trading, and DeFi integrations.
-
-## Overview
-
-The Starknet plugin serves as a foundational component of Eliza OS, bridging Starknet blockchain capabilities with the Eliza ecosystem. It provides crucial services for token operations, trading, portfolio management, and DeFi integrations, enabling both automated and user-directed interactions with the Starknet blockchain.
+Plugin for interacting with USDC tokens on Starknet through Eliza.
 
 ## Features
 
-### Token Operations
+- USDC balance queries on Starknet
+- Support for multiple networks (mainnet, sepolia, devnet)
+- Automatic decimal handling
 
-- **Token Creation**: Deploy new unruggable tokens with customizable metadata
-- **Token Transfers**: Send and receive tokens securely
-- **Balance Management**: Track and manage token balances
-- **Portfolio Analytics**: Real-time portfolio valuation and tracking
+## Installation
 
-### Trading Operations
-
-- **Token Swaps**: Execute token swaps through aggregated DEX liquidity
-- **Order Management**: Place and manage trading orders
-- **Price Monitoring**: Track token prices and market movements
-- **Trust Score Analysis**: Evaluate token and trader reliability
-
-### DeFi Integration
-
-- **Liquidity Management**: Monitor and manage liquidity positions
-- **Yield Optimization**: Track and optimize yield farming opportunities
-- **Risk Assessment**: Analyze and monitor DeFi protocol risks
-- **Performance Tracking**: Monitor investment performance metrics
-
-## Configuration
-
-The plugin requires the following environment variables:
-
-```typescript
-STARKNET_ADDRESS = your_starknet_address;
-STARKNET_PRIVATE_KEY = your_private_key;
-STARKNET_RPC_URL = your_rpc_url;
+```bash
+npm install @elizaos/plugin-starknet-aurum-usdc
 ```
 
-## Actions
+## Quick Start
 
-### deployToken
-
-Deploys a new unruggable token on Starknet.
+### Using the predefined instance
 
 ```typescript
-// Example usage
-const result = await runtime.executeAction(
-    "DEPLOY_STARKNET_UNRUGGABLE_MEME_TOKEN",
-    {
-        name: "TokenName",
-        symbol: "TKN",
-        owner: "OwnerAddressHere",
-        initialSupply: "1000000000000000000",
-    }
-);
+import { starknetAurumUsdcPlugin } from '@elizaos/plugin-starknet-aurum-usdc';
+
+// The plugin comes pre-configured for the Sepolia network
+eliza.use(starknetAurumUsdcPlugin);
 ```
 
-### transferToken
-
-Transfers tokens between wallets.
+### Creating a custom instance
 
 ```typescript
-// Example usage
-const result = await runtime.executeAction("TRANSFER_TOKEN", {
-    tokenAddress: "TokenAddressHere",
-    recipient: "RecipientAddressHere",
-    amount: "1000",
+import { createAurumUsdcPlugin } from '@elizaos/plugin-starknet-aurum-usdc';
+
+const plugin = createAurumUsdcPlugin({
+    network: 'sepolia', // 'mainnet' | 'sepolia' | 'devnet'
+    privateKey: process.env.STARKNET_PRIVATE_KEY,
+    accountAddress: process.env.STARKNET_ACCOUNT_ADDRESS,
+    rpcUrl: 'OPTIONAL_URL' // Custom RPC URL
 });
+
+eliza.use(plugin);
 ```
 
-### executeSwap
+## Available Actions
 
-Executes a token swap on Starknet.
+### Check Balance
 
 ```typescript
-// Example usage
-const result = await runtime.executeAction("EXECUTE_STARKNET_SWAP", {
-    sellTokenAddress: "SellTokenAddressHere",
-    buyTokenAddress: "BuyTokenAddressHere",
-    sellAmount: "1000000000000000000",
-});
+// The action is triggered by commands like:
+"check balance of 0x..."
+"get balance of domain.stark"
+"show balance"
 ```
 
-### transferSubdomain
+## Network Configuration
 
-Creates and transfers a subdomain.
+The plugin supports the following networks:
 
-```typescript
-// Example usage
-const result = await runtime.executeAction("CREATE_SUBDOMAIN", {
-    subdomain: "subdomain.domain.stark",
-    recipient: "RecipientAddressHere",
-});
+- **Mainnet**
+  - RPC: https://starknet-mainnet.public.blastapi.io
+  - USDC: 0x049d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7
+
+- **Sepolia (Testnet)**
+  - RPC: https://api.cartridge.gg/x/starknet/sepolia
+  - USDC: 0x040976C636d469331A343a2Fa3E67280663124a5bd7Fc0BC17191ECb847d1E42
+
+- **Devnet**
+  - RPC: http://localhost:5050
+  - USDC: 0x049d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7
+
+## Implementation
+
+The plugin is built on three main components:
+
+1. **AurumUsdcContract**: Implements the interface for interacting with the USDC contract on Starknet
+   - Balance queries
+   - Decimal handling
+
+2. **AurumUsdcProvider**: Provides an abstraction layer over the contract
+   - Account management
+   - Error handling
+
+3. **Actions**: Implements the executable actions
+   - GetBalanceAction: For balance queries
+
+## Required Environment Variables
+
+```env
+STARKNET_PRIVATE_KEY=your_private_key
+STARKNET_ACCOUNT_ADDRESS=your_account_address
 ```
 
-## Security Considerations
+## Security
 
-1. **Access Control**
-
-    - Validate transaction signers
-    - Implement role-based permissions
-    - Secure private key storage
-
-2. **Transaction Limits**
-
-    - Set maximum transaction amounts
-    - Implement daily trading limits
-    - Configure per-token restrictions
-
-3. **Monitoring**
-
-    - Track failed transaction attempts
-    - Monitor unusual trading patterns
-    - Log security-relevant events
-
-4. **Recovery**
-    - Implement transaction rollback mechanisms
-    - Maintain backup RPC endpoints
-    - Document recovery procedures
-
-## Performance Optimization
-
-1. **Cache Management**
-
-    - Implement token data caching
-    - Configure cache TTL settings
-    - Monitor cache hit rates
-
-2. **RPC Optimization**
-
-    - Use connection pooling
-    - Implement request batching
-    - Monitor RPC usage
-
-3. **Transaction Management**
-    - Batch similar transactions
-    - Optimize gas usage
-    - Handle transaction retries
+- Credentials should be handled securely through environment variables
+- It's recommended to use different accounts for mainnet and testnet
+- Implement additional validations according to your needs
 
 ## Contributing
 
-Contributions are welcome! Please see the [CONTRIBUTING.md](CONTRIBUTING.md) file for more information.
+Contributions are welcome. Please ensure you:
 
-## Credits
-
-This plugin integrates with and builds upon several key technologies:
-
-- [Starknet](https://starknet.io/) - The core blockchain platform
-- [Starknet.js](https://github.com/starknet-io/starknet.js) - Core Starknet interactions
-- [Unruggable](https://unruggable.meme/) - Token creation and security
-- [Ekubo](https://www.ekubo.org/) - DEX integrations
-- [Avnu](https://avnu.fi/) - Token swap aggregation
-- [Birdeye](https://birdeye.so/) - Price feeds and analytics
-- [Helius](https://helius.xyz/) - Enhanced RPC services
-
-Special thanks to:
-
-- The Starknet ecosystem and all the open-source contributors who make these integrations possible.
-- The Eliza community for their contributions and feedback.
-
-For more information about Starknet blockchain capabilities:
-
-- [Starknet Documentation](https://docs.starknet.io/)
-- [Starknet Developer Portal](https://starknet.io/developers)
-- [Starknet Network Dashboard](https://starknet.io/dashboard)
-- [Starknet GitHub Repository](https://github.com/starkware-libs/starknet)
-
-## License
-
-This plugin is part of the Eliza project. See the main project repository for license information.
+1. Follow the existing code style
+2. Add tests for new features
+3. Update documentation as needed
