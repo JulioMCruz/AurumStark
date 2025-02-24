@@ -1,192 +1,196 @@
-# Eliza 🤖
+# AurumEliza
 
-<div align="center">
-  <img src="./docs/static/img/eliza_banner.jpg" alt="Eliza Banner" width="100%" />
-</div>
+AurumEliza is an AI-powered payment and travel assistant platform that integrates cryptocurrency transactions with voice commands and location-based services. The system uses character-based AI agents to provide seamless financial experiences for digital nomads and international merchants.
 
-<div align="center">
+## Architecture Overview
 
-📑 [Technical Report](https://arxiv.org/pdf/2501.06781) |  📖 [Documentation](https://elizaos.github.io/eliza/) | 🎯 [Examples](https://github.com/thejoven/awesome-eliza)
+```mermaid
+graph TB
+    subgraph AI Characters
+        A[Aurum Assistant]
+        E[Aurum Evaluator]
+    end
 
-</div>
+    subgraph Plugins
+        P1[Starknet USDC Plugin]
+        P2[Web Search Plugin]
+    end
 
-## 🌍 README Translations
+    subgraph Core Services
+        C1[Voice Processing]
+        C2[Payment Processing]
+        C3[Location Services]
+        C4[Rewards System]
+    end
 
-[中文说明](i18n/readme/README_CN.md) | [日本語の説明](i18n/readme/README_JA.md) | [한국어 설명](i18n/readme/README_KOR.md) | [Persian](i18n/readme/README_FA.md) | [Français](i18n/readme/README_FR.md) | [Português](i18n/readme/README_PTBR.md) | [Türkçe](i18n/readme/README_TR.md) | [Русский](i18n/readme/README_RU.md) | [Español](i18n/readme/README_ES.md) | [Italiano](i18n/readme/README_IT.md) | [ไทย](i18n/readme/README_TH.md) | [Deutsch](i18n/readme/README_DE.md) | [Tiếng Việt](i18n/readme/README_VI.md) | [עִברִית](i18n/readme/README_HE.md) | [Tagalog](i18n/readme/README_TG.md) | [Polski](i18n/readme/README_PL.md) | [Arabic](i18n/readme/README_AR.md) | [Hungarian](i18n/readme/README_HU.md) | [Srpski](i18n/readme/README_RS.md) | [Română](i18n/readme/README_RO.md) | [Nederlands](i18n/readme/README_NL.md) | [Ελληνικά](i18n/readme/README_GR.md)
+    A --> P1
+    E --> P2
+    A & E --> C1
+    P1 --> C2
+    P2 --> C3
+    C2 --> C4
+```
 
-## 🚩 Overview
+## AI Characters
 
-<div align="center">
-  <img src="./docs/static/img/eliza_diagram.png" alt="Eliza Diagram" width="100%" />
-</div>
+### 1. Aurum Assistant
+- **Purpose**: Primary interface for payment and travel assistance
+- **Plugin**: `@elizaos/plugin-starknet-aurum-usdc`
+- **Capabilities**:
+  - Cryptocurrency-to-fiat conversion
+  - Voice-activated payments
+  - Rewards tracking
+  - Transaction processing
+  - Currency exchange management
 
-## ✨ Features
+### 2. Aurum Evaluator
+- **Purpose**: Location-based services and merchant discovery
+- **Plugin**: `@elizaos/plugin-web-search`
+- **Capabilities**:
+  - Multilingual location queries
+  - Restaurant and merchant discovery
+  - JSON-formatted responses
+  - Geographic context interpretation
+  - Proximity-based search
 
-- 🛠️ Full-featured Discord, X (Twitter) and Telegram connectors
-- 🔗 Support for every model (Llama, Grok, OpenAI, Anthropic, Gemini, etc.)
-- 👥 Multi-agent and room support
-- 📚 Easily ingest and interact with your documents
-- 💾 Retrievable memory and document store
-- 🚀 Highly extensible - create your own actions and clients
-- 📦 Just works!
+## System Components
 
-## Video Tutorials
+```mermaid
+sequenceDiagram
+    participant User
+    participant Voice System
+    participant Aurum Assistant
+    participant Payment System
+    participant Location Services
+    participant Rewards System
 
-[AI Agent Dev School](https://www.youtube.com/watch?v=ArptLpQiKfI&list=PLx5pnFXdPTRzWla0RaOxALTSTnVq53fKL)
+    User->>Voice System: Voice Command
+    Voice System->>Aurum Assistant: Process Command
+    Aurum Assistant->>Payment System: Process Payment
+    Aurum Assistant->>Location Services: Get Merchant Info
+    Payment System->>Rewards System: Calculate Points
+    Rewards System->>User: Confirm Transaction & Points
+```
 
-## 🎯 Use Cases
+## Project Structure
 
-- 🤖 Chatbots
-- 🕵️ Autonomous Agents
-- 📈 Business Process Handling
-- 🎮 Video Game NPCs
-- 🧠 Trading
+```
+AurumEliza/
+├── agent/                 # Core agent implementation
+├── characters/           # AI character definitions
+│   ├── aurum.character.json
+│   └── aurum-evaluator.character.json
+├── client/              # Web client interface
+├── packages/            # Core packages and plugins
+└── docs/               # Documentation
+```
 
-## 🚀 Quick Start
+## Features
 
-### Prerequisites
+1. **Voice-Activated Payments**
+   - Natural language processing
+   - Multi-currency support
+   - Hands-free transactions
 
-- [Python 2.7+](https://www.python.org/downloads/)
-- [Node.js 23+](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm)
-- [pnpm](https://pnpm.io/installation)
+2. **Location Services**
+   - Merchant discovery
+   - Proximity-based search
+   - Multilingual support
 
-> **Note for Windows Users:** [WSL 2](https://learn.microsoft.com/en-us/windows/wsl/install-manual) is required.
+3. **Rewards System**
+   - Points tracking
+   - Transaction history
+   - International rewards
 
-### Use the Starter (Recommended)
+4. **Currency Management**
+   - Crypto-to-fiat conversion
+   - Exchange rate monitoring
+   - Cross-border transactions
 
+## Development Setup
+
+1. Install dependencies:
 ```bash
-git clone https://github.com/elizaos/eliza-starter.git
-cd eliza-starter
-cp .env.example .env
-pnpm i && pnpm build && pnpm start
+pnpm install
 ```
 
-### Manually Start Eliza (Only recommended if you know what you are doing)
-
-#### Checkout the latest release
-
+2. Start the development environment:
 ```bash
-# Clone the repository
-git clone https://github.com/elizaos/eliza.git
-
-# This project iterates fast, so we recommend checking out the latest release
-git checkout $(git describe --tags --abbrev=0)
-# If the above doesn't checkout the latest release, this should work:
-# git checkout $(git describe --tags `git rev-list --tags --max-count=1`)
+pnpm dev
 ```
 
-#### Edit the .env file
-
-Copy .env.example to .env and fill in the appropriate values.
-
-```
-cp .env.example .env
-```
-
-Note: .env is optional. If you're planning to run multiple distinct agents, you can pass secrets through the character JSON
-
-#### Start Eliza
-
+3. Run tests:
 ```bash
-pnpm i
-pnpm build
-pnpm start
-
-# The project iterates fast, sometimes you need to clean the project if you are coming back to the project
-pnpm clean
+pnpm test
 ```
 
-### Interact via Browser
+## Available Scripts
 
-Once the agent is running, you should see the message to run "pnpm start:client" at the end.
+- `pnpm start`: Start the agent
+- `pnpm start:client`: Start the web client
+- `pnpm start:debug`: Start with debug logging
+- `pnpm build`: Build all packages
+- `pnpm test`: Run tests
+- `pnpm docker:build`: Build Docker container
+- `pnpm docker:run`: Run Docker container
 
-Open another terminal, move to the same directory, run the command below, then follow the URL to chat with your agent.
+## Environment Requirements
 
-```bash
-pnpm start:client
-```
+- Node.js: v23.3.0
+- Package Manager: pnpm@9.15.0
+- Docker (optional)
 
-Then read the [Documentation](https://elizaos.github.io/eliza/) to learn how to customize your Eliza.
+## Character Configuration
 
----
-
-### Automatically Start Eliza
-
-The start script provides an automated way to set up and run Eliza:
-
-```bash
-sh scripts/start.sh
-```
-
-For detailed instructions on using the start script, including character management and troubleshooting, see our [Start Script Guide](./docs/docs/guides/start-script.md).
-
-> **Note**: The start script handles all dependencies, environment setup, and character management automatically.
-
----
-
-### Modify Character
-
-1. Open `packages/core/src/defaultCharacter.ts` to modify the default character. Uncomment and edit.
-
-2. To load custom characters:
-    - Use `pnpm start --characters="path/to/your/character.json"`
-    - Multiple character files can be loaded simultaneously
-3. Connect with X (Twitter)
-    - change `"clients": []` to `"clients": ["twitter"]` in the character file to connect with X
-
----
-
-#### Additional Requirements
-
-You may need to install Sharp. If you see an error when starting up, try installing it with the following command:
-
-```
-pnpm install --include=optional sharp
-```
-
----
-
-### Start Eliza with Gitpod
-
-[![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/elizaos/eliza/tree/main)
-
----
-
-### Deploy Eliza in one click 
-
-Use [Fleek](https://fleek.xyz/eliza/) to deploy Eliza in one click. This opens Eliza to non-developers and provides the following options to build your agent:
-1. Start with a template
-2. Build characterfile from scratch
-3. Upload pre-made characterfile
-
-Click [here](https://fleek.xyz/eliza/) to get started!
-
----
-
-### Community & contact
-
-- [GitHub Issues](https://github.com/elizaos/eliza/issues). Best for: bugs you encounter using Eliza, and feature proposals.
-- [Discord](https://discord.gg/ai16z). Best for: sharing your applications and hanging out with the community.
-
-## Citation
-
-We now have a [paper](https://arxiv.org/pdf/2501.06781) you can cite for the Eliza OS:
-```bibtex
-@article{walters2025eliza,
-  title={Eliza: A Web3 friendly AI Agent Operating System},
-  author={Walters, Shaw and Gao, Sam and Nerd, Shakker and Da, Feng and Williams, Warren and Meng, Ting-Chien and Han, Hunter and He, Frank and Zhang, Allen and Wu, Ming and others},
-  journal={arXiv preprint arXiv:2501.06781},
-  year={2025}
+### Voice Settings
+```json
+{
+    "voice": {
+        "model": "en_US-amy-medium"
+    }
 }
 ```
 
-## Contributors
+### Twitter Spaces Configuration
+- Max Speakers: 2
+- Duration: 30 minutes
+- Language: English
+- Model: GPT-3.5-turbo
 
-<a href="https://github.com/elizaos/eliza/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=elizaos/eliza" alt="Eliza project contributors" />
-</a>
+## Plugin System
 
+The platform uses a plugin architecture to extend functionality:
 
-## Star History
+1. **Starknet USDC Plugin**
+   - Handles cryptocurrency transactions
+   - Manages USDC conversions
+   - Integrates with Starknet blockchain
 
-[![Star History Chart](https://api.star-history.com/svg?repos=elizaos/eliza&type=Date)](https://star-history.com/#elizaos/eliza&Date)
+2. **Web Search Plugin**
+   - Provides location-based services
+   - Enables merchant discovery
+   - Handles geographic queries
+
+## Docker Support
+
+The project includes Docker support for containerized deployment:
+
+```bash
+# Build and run with Docker
+pnpm docker:build
+pnpm docker:run
+```
+
+## Testing
+
+The project includes multiple testing levels:
+
+```bash
+# Run all tests
+pnpm test
+
+# Run smoke tests
+pnpm smokeTests
+
+# Run integration tests
+pnpm integrationTests
