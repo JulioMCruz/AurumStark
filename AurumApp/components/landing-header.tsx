@@ -2,30 +2,47 @@
 
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
-import {
-  DynamicContextProvider,
-  DynamicWidget,
-} from "@dynamic-labs/sdk-react-core";
-import { useDynamicContext, useIsLoggedIn } from '@dynamic-labs/sdk-react-core'
+// import {
+//   DynamicContextProvider,
+//   DynamicWidget,
+// } from "@dynamic-labs/sdk-react-core";
+// import { useDynamicContext, useIsLoggedIn } from '@dynamic-labs/sdk-react-core'
+
+
+import { useState, useContext } from "react"
+import { LoginModal } from "@/components/login-modal"
+import { AuthContext } from "@/components/providers/auth-provider"
+import { signOut } from "firebase/auth"
+import { auth } from "@/lib/firebase"
 
 export function LandingHeader() {
+  const [isLoginModalOpen, setIsLoginModalOpen] = useState(false)
+  const { user, loading } = useContext(AuthContext)
 
-  const isLoggedIn = useIsLoggedIn();
-  const { handleLogOut, setShowAuthFlow } = useDynamicContext()
-
-  function login() {
-    if (!isLoggedIn) {
-        setShowAuthFlow(true)
-    } else {
-      //toast.warning('user is already logged in')
+  const handleLogout = async () => {
+    try {
+      await signOut(auth)
+    } catch (error) {
+      console.error("Error signing out", error)
     }
   }
 
-  async function logout() {
-    await handleLogOut()
-    //router.push('/')
-    //setIsMenuOpen?.(false)
-  }
+  // const isLoggedIn = useIsLoggedIn();
+  // const { handleLogOut, setShowAuthFlow } = useDynamicContext()
+
+  // function login() {
+  //   if (!isLoggedIn) {
+  //       setShowAuthFlow(true)
+  //   } else {
+  //     //toast.warning('user is already logged in')
+  //   }
+  // }
+
+  // async function logout() {
+  //   await handleLogOut()
+  //   //router.push('/')
+  //   //setIsMenuOpen?.(false)
+  // }
 
   return (
     <header className="bg-secondary/50 backdrop-blur-sm border-b border-border">
@@ -63,7 +80,7 @@ export function LandingHeader() {
             )}
           </div> */}
           
-          { !isLoggedIn && (
+          {/* { !isLoggedIn && (
             <Button 
                 onClick={login} >
                 Launch App
@@ -78,10 +95,32 @@ export function LandingHeader() {
                 Logout
                 </Button>
             </>
-            )}
+            )} */}
 
+          {loading ? (
+            <Button size="sm" disabled>
+              Loading...
+            </Button>
+          ) : user ? (
+            <>
+              <Button asChild size="sm" variant="outline">
+                <Link href={user.email?.includes("merchant") ? "/merchant/dashboard" : "/customer/chat"}>
+                  Dashboard
+                </Link>
+              </Button>
+              <Button onClick={handleLogout} size="sm" variant="destructive">
+                Logout
+              </Button>
+            </>
+          ) : (
+            <Button onClick={() => setIsLoginModalOpen(true)} size="sm" className="button-gradient">
+              Login
+            </Button>
+          )}
         </nav>
       </div>
+      <LoginModal isOpen={isLoginModalOpen} onClose={() => setIsLoginModalOpen(false)} />
+
     </header>
   )
 }

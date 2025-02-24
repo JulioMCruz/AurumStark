@@ -3,32 +3,25 @@
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { BarChart2, DollarSign, Settings, User, CreditCard } from "lucide-react"
-import {
-  DynamicContextProvider,
-  DynamicWidget,
-} from "@dynamic-labs/sdk-react-core";
-import { useRouter } from "next/navigation";
-import { useIsLoggedIn, useDynamicContext } from "@dynamic-labs/sdk-react-core";  
+import { useContext, useState } from "react"
+import { useRouter } from "next/navigation"
+import { AuthContext } from "@/components/providers/auth-provider"
+import { signOut } from "firebase/auth"
+import { auth } from "@/lib/firebase"
+import { LoginModal } from "@/components/login-modal"
 
 export function MerchantHeader() {
+  const router = useRouter()
+  const { user, loading } = useContext(AuthContext)
+  const [isLoginModalOpen, setIsLoginModalOpen] = useState(false)
 
-  const router = useRouter();
-
-  const isLoggedIn = useIsLoggedIn();
-  const { handleLogOut, setShowAuthFlow } = useDynamicContext()
-
-  function login() {
-    if (!isLoggedIn) {
-        setShowAuthFlow(true)
-    } else {
-      //toast.warning('user is already logged in')
+  const handleLogout = async () => {
+    try {
+      await signOut(auth)
+      router.push('/')
+    } catch (error) {
+      console.error("Error signing out", error)
     }
-  }
-
-  async function logout() {
-    await handleLogOut()
-    router.push('/')
-    //setIsMenuOpen?.(false)
   }
 
   return (
@@ -56,38 +49,23 @@ export function MerchantHeader() {
               Capture Payment
             </Button>
           </Link>
-          {/* <Link href="/merchant/settings">
-            <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground">
-              <Settings className="h-4 w-4 mr-2" />
-              Settings
-            </Button>
-          </Link>
-          <Link href="/merchant/profile">
-            <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground">
-              <User className="h-4 w-4 mr-2" />
-              Profile
-            </Button>
-          </Link> */}
 
-          { !isLoggedIn && (
-            <Button 
-                onClick={login} >
-                Launch App
+          {loading ? (
+            <Button size="sm" disabled>
+              Loading...
+            </Button>
+          ) : user ? (
+            <Button onClick={handleLogout} size="sm" variant="destructive">
+              Logout
+            </Button>
+          ) : (
+            <Button onClick={() => setIsLoginModalOpen(true)} size="sm" className="button-gradient">
+              Login
             </Button>
           )}
-
-          { isLoggedIn && (
-            <>
-              <DynamicWidget />
-              <Button
-                onClick={logout} >
-                Logout
-                </Button>
-            </>
-            )}
-
         </nav>
       </div>
+      <LoginModal isOpen={isLoginModalOpen} onClose={() => setIsLoginModalOpen(false)} />
     </header>
   )
 }
