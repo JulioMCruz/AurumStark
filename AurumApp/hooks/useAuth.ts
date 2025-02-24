@@ -3,26 +3,68 @@
 import { useState, useEffect } from "react"
 import { type User, onAuthStateChanged } from "firebase/auth"
 import { auth } from "@/lib/firebase"
+import { userService } from "@/services/user"
+import { ChipiSDK } from '@chipi-pay/chipi-sdk';
+
+interface AuthState {
+  user: User | null
+  loading: boolean
+  isFirstLogin: boolean
+  userProfile: UserData | null
+}
 
 export function useAuth() {
-  const [user, setUser] = useState<User | null>(null)
-  const [loading, setLoading] = useState(true)
+  const [state, setState] = useState<AuthState>({
+    user: null,
+    loading: true,
+    isFirstLogin: false,
+    userProfile: null
+  })
+
+  const createWallet = async (pin: string) => {
+    const chipi = new ChipiSDK({
+      rpcUrl: `https://starknet-mainnet.infura.io/v3/${process.env.NEXT_PUBLIC_INFURA_API_KEY}`,
+      apiKey: process.env.NEXT_PUBLIC_AVNU_API_KEY,
+      }) 
+
+    const wallet = await chipi.createWallet(pin)
+    console.log(wallet)
+    return wallet
+  }
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      setUser(user)
-      setLoading(false)
-    })
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        try {
+          let userData = await userService.getUserProfile({ uid: user.uid })
+          
+          if (!userData) {
+            userData = await userService.createUserProfile({ user })
+          } else {
+            await userService.updateUserProfile({
+              uid: user.uid,
+              data: { lastLoginAt: new Date().toISOString() }
+            })
+          }
 
-    // Handle initial auth state
-    if (auth.currentUser) {
-      setUser(auth.currentUser)
-      setLoading(false)
-    }
+          setState({
+            user,
+            loading: false,
+            isFirstLogin: userData.isFirstLogin,
+            userProfile: userData
+          })
+        } catch (error) {
+          console.error("Error fetching user data:", error)
+          setState({ user, loading: false, isFirstLogin: false, userProfile: null })
+        }
+      } else {
+        setState({ user: null, loading: false, isFirstLogin: false, userProfile: null })
+      }
+    })
 
     return () => unsubscribe()
   }, [])
 
-  return { user, loading }
+  return state
 }
 

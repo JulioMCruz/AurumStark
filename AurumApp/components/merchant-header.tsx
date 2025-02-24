@@ -12,7 +12,7 @@ import { LoginModal } from "@/components/login-modal"
 
 export function MerchantHeader() {
   const router = useRouter()
-  const { user, loading } = useContext(AuthContext)
+  const { user, loading, userProfile } = useContext(AuthContext)
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false)
 
   const handleLogout = async () => {
@@ -55,9 +55,14 @@ export function MerchantHeader() {
               Loading...
             </Button>
           ) : user ? (
-            <Button onClick={handleLogout} size="sm" variant="destructive">
-              Logout
-            </Button>
+            <>
+              {userProfile && (
+                <p className="text-muted-foreground">Welcome, {userProfile.name}</p>
+              )}
+              <Button onClick={handleLogout} size="sm" variant="destructive">
+                Logout
+              </Button>
+            </>
           ) : (
             <Button onClick={() => setIsLoginModalOpen(true)} size="sm" className="button-gradient">
               Login

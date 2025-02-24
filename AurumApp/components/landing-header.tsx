@@ -17,7 +17,7 @@ import { auth } from "@/lib/firebase"
 
 export function LandingHeader() {
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false)
-  const { user, loading } = useContext(AuthContext)
+  const { user, loading, userProfile } = useContext(AuthContext)
 
   const handleLogout = async () => {
     try {
@@ -97,12 +97,18 @@ export function LandingHeader() {
             </>
             )} */}
 
+            {/* // show the message: 'Welcome, {user.name}' if user is logged in */}
+
+
           {loading ? (
             <Button size="sm" disabled>
               Loading...
             </Button>
           ) : user ? (
             <>
+              {userProfile && (
+                <p>Welcome, {userProfile.name}</p>
+              )}
               <Button asChild size="sm" variant="outline">
                 <Link href={user.email?.includes("merchant") ? "/merchant/dashboard" : "/customer/chat"}>
                   Dashboard
