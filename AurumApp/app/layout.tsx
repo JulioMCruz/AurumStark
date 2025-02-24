@@ -3,13 +3,6 @@ import { Inter } from "next/font/google"
 import "./globals.css"
 import { Footer } from "@/components/footer"
 import { Providers } from "@/components/providers"
-import { AuthProvider } from "@/components/providers/auth-provider"
-
-import {
-  DynamicContextProvider,
-  DynamicWidget,
-} from "@dynamic-labs/sdk-react-core";
-import { StarknetWalletConnectors } from "@dynamic-labs/starknet";
 
 const inter = Inter({ subsets: ["latin"] })
 
@@ -27,12 +20,10 @@ export default function RootLayout({
   return (
     <html lang="en" className="dark">
       <body className={`${inter.className} bg-background text-foreground antialiased flex flex-col`}>
-        <AuthProvider>
         <Providers>
               {children}
               {/* <Footer /> */}
         </Providers>
-        </AuthProvider>
       </body>
     </html>
   )
