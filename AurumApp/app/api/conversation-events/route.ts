@@ -77,6 +77,8 @@ export async function POST(request: NextRequest) {
     }
 
     const memoryRequest = await request.json()
+
+    console.log("memoryRequest:", memoryRequest)
     const memoryData: MemoryCreation = memoryRequest
 
     // Validate required fields
@@ -94,10 +96,11 @@ export async function POST(request: NextRequest) {
     const agentRequestBody = {
       user: uid,
       text: JSON.stringify({
-        query: 'Analyze if the user is asking about Aurum-related places nearby, return a object {result: boolean, places: [{name: string, address: string}]}' +
-               'only return places if the result its true, if the result its false return an empty array. Just return the json object, no other text or comments',
+        query: 'Analyze if the user is asking about places nearby, if the user is asking about places nearby, return a SEARCH_PLACES_NEARBY . ' + 
+               'If the user is not asking about places nearby, return NOT_ACTION. ' +
+               'Just return the string result, no other text or comments.make sure user is mentioning Aurum.',
         context: {
-          userLocation: memoryData.geolocation.address,
+          userLocation: memoryData?.geolocation?.address,
           conversation: formattedTranscript
         }
       })
@@ -106,7 +109,7 @@ export async function POST(request: NextRequest) {
     console.log("agentRequestBody:", agentRequestBody)
 
     const response = await fetch(
-      `${process.env.SERVER_ENDPOINT}/${process.env.AGENT_ID}/message`,
+      `${process.env.SERVER_ENDPOINT}/${process.env.AGENT_ID_EVALUATOR}/message`,
       {
         method: 'POST',
         headers: {
@@ -160,7 +163,46 @@ export async function POST(request: NextRequest) {
 
     const elizaResponse = await response.json()
 
-    console.log("response from eliza:", elizaResponse)
+    console.log("* elizaResponse:", elizaResponse)
+
+    switch (elizaResponse.text) {
+      case 'SEARCH_PLACES_NEARBY':
+        const agentRequestSearchPlacesNearbyBody = {
+          user: uid,
+          text: JSON.stringify({
+            query: 'use the action WEB_SEARCH to search in the web for places nearby the user location. return 5 places nearby the user location. return the name and url link of the place. like a comma separated list. ' + 
+                   'Just return the comma separated list, no other text or comments.make sure user is mentioning Aurum.',
+            context: {
+              userLocation: memoryData?.geolocation?.address,
+              conversation: formattedTranscript
+            }
+          })
+        }
+
+        console.log("agentRequestSearchPlacesNearbyBody:", agentRequestSearchPlacesNearbyBody)
+
+        const response = await fetch(
+          `${process.env.SERVER_ENDPOINT}/${process.env.AGENT_ID_EVALUATOR}/message`,
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(agentRequestSearchPlacesNearbyBody)
+          }
+        )
+
+        const elizaResponseSearchPlacesNearby = await response.json()
+
+        console.log("elizaResponseSearchPlacesNearby:", elizaResponseSearchPlacesNearby)
+
+        break
+      case 'NOT_ACTION':
+        console.log("NOT_ACTION")
+        break
+    }
+
+    //console.log("response from eliza:", elizaResponse)
 
     const agentResponse: AgentResponse = elizaResponse
 

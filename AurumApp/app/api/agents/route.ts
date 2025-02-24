@@ -31,7 +31,15 @@ export const GET = async () => {
         { status: response.status }
       )
 
-    const data = await response.json() as AgentsResponse
+    const dataToFilter = await response.json() as AgentsResponse
+    console.log("dataToFilter:", dataToFilter)
+
+    // filter the agent id what its iclude in the coma delimited allow ids defined in the .env NEXT_PUBLIC_AGENT_ALLOW_IDS
+    const allowIds = process.env.NEXT_PUBLIC_AGENT_ALLOW_IDS?.split(',') || []
+    console.log("allowIds:", allowIds)
+
+    const data = { "agents": dataToFilter.agents.filter(agent => allowIds.includes(agent.id))}
+    console.log("data:", data)
     return NextResponse.json(data)
     
   } catch (error) {
