@@ -43,12 +43,28 @@ graph TB
   - 10x points multiplier for rewards (POINTS_MULTIPLIER = 10)
   - Automatic fee collection and points distribution
   - Accumulated fees tracking
+  - Eventos para seguimiento de transacciones
 - Key Functions:
   ```cairo
   fn process_transaction(sender: ContractAddress, recipient: ContractAddress, amount: u256)
   fn accumulated_fees() -> u256
   fn usdc_token() -> ContractAddress
   fn reward_points_token() -> ContractAddress
+  fn withdraw_fees(recipient: ContractAddress, amount: u256)
+  fn get_reward_rate() -> u256
+  fn get_points_multiplier() -> u256
+  ```
+
+- Events:
+  ```cairo
+  #[event]
+  fn TransactionProcessed(sender: ContractAddress, recipient: ContractAddress, amount: u256)
+  #[event]
+  fn FeeCollected(amount: u256)
+  #[event]
+  fn PointsRewarded(recipient: ContractAddress, amount: u256)
+  #[event]
+  fn FeesWithdrawn(recipient: ContractAddress, amount: u256)
   ```
 
 ### 3. AurumRewardPoints (ARP)
@@ -82,69 +98,31 @@ sequenceDiagram
     AurumReward->>User: Emit FeeCollected & PointsRewarded events
 ```
 
+## Deployed Contracts (Mainnet)
+
+| Contract Name | Address |
+|--------------|---------|
+| AurumUsdc | `0x053c91253bc9682c04929ca02ed00b3e423f6710d2ee7e0d5ebb06f3ecf368a8` |
+| AurumRewardPoints | `0x5d1e9273f66ecbf2a64392e4346046f7ec6e3f5787cbdadd6637feb6f48243c` |
+| AurumReward | `0x290d82f4967bdb9e89921abbdf5716c81c2fba9fa2d1ffd42b1895910d5503d` |
+
+Deployer Address: `0x07bF75f078f9F3FaCD4D4e45C43d880fD348a20b47C87BDacd9057a6c7Fd320d`
+
+RPC URL: `https://starknet-mainnet.g.alchemy.com/starknet/version/rpc/v0_7/MIuGIhA0jzBYkfSbJ1pfmX0dB-kJcmO0`
+
 ## Deployed Contracts (Sepolia Testnet)
 
 | Contract Name | Address |
 |--------------|---------|
-| AurumUsdc | `0x040976C636d469331A343a2Fa3E67280663124a5bd7Fc0BC17191ECb847d1E42` |
-| AurumRewardPoints | `0x00386cC559e9033b57Bb9E2Eb85a40f2af43dCfD51fa030C7ff8E4C8Ba2B54d2` |
-| AurumReward | `0x020a6E405F957ee966e6f1309039731F0f1D20A3074C035b08e4cFBfdb711B88` |
+| AurumUsdc | `0x5315902efd62667a0ca3c228decc63b30fb663e411dc726ac0f2ba35e8665f` |
+| AurumRewardPoints | `0x3e0a89574505b2efa400485f1977b8b6d4741ddb20b46d7dd25700335311cd7` |
+| AurumReward | `0x72d6a54994d80337db96da95b19454ab87c7c5ca9490d72d4901c6464676412` |
 
-Transaction Hash: `0x335a845eef08833553d8cfc5369528d7a013dc142fef67fb1ce144455622246`
+Deployer Address: `0x05a7e5c5813c860fd88fd3f346c9329987b1d3d2f571c6024db1af5192deb6d6`
+
+RPC URL: `https://api.cartridge.gg/x/starknet/sepolia`
 
 ## Development Setup
 
 1. Install dependencies:
-```bash
-yarn install
 ```
-
-2. Compile contracts:
-```bash
-yarn compile
-```
-
-3. Run tests:
-```bash
-yarn test
-```
-
-4. Deploy contracts:
-```bash
-yarn deploy
-```
-
-## Environment Setup
-
-The project uses the following tools and versions:
-- Starknet-devnet: v0.2.3
-- Scarb: v2.9.2
-- Snforge: v0.35.1
-- Cairo: v2.9.2
-- RPC: v0.7.1
-
-Make sure to have these versions installed for compatibility.
-
-## Scripts
-
-- `yarn chain`: Start local Starknet network
-- `yarn compile`: Compile smart contracts
-- `yarn deploy`: Deploy contracts to network
-- `yarn test`: Run contract tests
-- `yarn verify`: Verify contract deployments
-
-## Project Structure
-
-```
-AurumContracts/
-├── packages/
-│   ├── snfoundry/
-│   │   ├── contracts/
-│   │   │   └── src/
-│   │   │       ├── AurumUsdc.cairo
-│   │   │       ├── AurumReward.cairo
-│   │   │       └── AurumRewardPoints.cairo
-│   │   ├── scripts-ts/
-│   │   └── tests/
-│   └── nextjs/
-└── README.md

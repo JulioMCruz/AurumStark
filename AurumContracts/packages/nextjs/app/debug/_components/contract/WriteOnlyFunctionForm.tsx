@@ -18,6 +18,7 @@ import {
   useNetwork,
   useTransactionReceipt,
   useContract,
+  useProvider,
 } from "@starknet-react/core";
 import { Abi } from "abi-wan-kanabi";
 import { AbiFunction } from "~~/utils/scaffold-stark/contract";
@@ -50,6 +51,7 @@ export const WriteOnlyFunctionForm = ({
   const { chain } = useNetwork();
   const writeTxn = useTransactor();
   const { targetNetwork } = useTargetNetwork();
+  const { provider } = useProvider();
 
   const writeDisabled = useMemo(
     () =>
@@ -79,7 +81,69 @@ export const WriteOnlyFunctionForm = ({
     }
   }, [error]);
 
+  const handleProcessTransaction = async () => {
+    try {
+      console.log('🚀 Iniciando process_transaction');
+      console.log('📝 Datos del formulario:', form);
+      
+      const testAddress = '0x02d2a4804f83c34227314dba41d5c2f8a546a500d34e30bb5078fd36b5af2d77';
+      
+      if (!contractInstance || !account) {
+        console.error('❌ Contrato o cuenta no inicializados:', {
+          contractInstance: !!contractInstance,
+          account: !!account
+        });
+        throw new Error('Contrato o cuenta no inicializados');
+      }
+
+      console.log('🔗 Conectando cuenta al contrato:', {
+        address: account.address,
+        contractAddress: contractInstance.address
+      });
+      
+      contractInstance.connect(account);
+
+      // Preparar la llamada
+      const args = getArgsAsStringInputFromForm(form);
+      console.log('📊 Argumentos preparados:', args);
+      
+      const myCall = contractInstance.populate(
+        'process_transaction',
+        args as any
+      );
+      console.log('📫 Llamada preparada:', myCall);
+      
+      // Ejecutar la transacción
+      console.log('🔄 Ejecutando transacción...');
+      const res = await contractInstance.process_transaction(myCall.calldata);
+      console.log('✅ Transacción enviada:', res);
+      
+      console.log('⏳ Esperando confirmación de la transacción...');
+      const receipt = await provider.waitForTransaction(res.transaction_hash);
+      console.log('🎉 Transacción confirmada:', receipt);
+      
+      onChange();
+      console.log('✨ Proceso completado con éxito');
+    } catch (e: any) {
+      const errorPattern = /Contract (.*?)"}/;
+      const match = errorPattern.exec(e.message);
+      const message = match ? match[1] : e.message;
+
+      console.error("❌ Error en process_transaction:", {
+        error: message,
+        fullError: e,
+        stackTrace: e.stack
+      });
+    }
+  };
+
   const handleWrite = async () => {
+    if (abiFunction.name === 'process_transaction') {
+      console.log('🎯 Detectada función process_transaction');
+      await handleProcessTransaction();
+      return;
+    }
+
     if (sendAsync) {
       try {
         const makeWriteWithParams = () =>
