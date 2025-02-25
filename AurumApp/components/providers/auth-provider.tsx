@@ -11,17 +11,19 @@ interface AuthContextType {
   loading: boolean
   isFirstLogin: boolean
   userProfile: UserData | null
+  createWallet: (pin: string) => Promise<any>
 }
 
 export const AuthContext = createContext<AuthContextType>({
   user: null,
   loading: true,
   isFirstLogin: false,
-  userProfile: null
+  userProfile: null,
+  createWallet: async () => {}
 })
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const { user, loading, isFirstLogin, userProfile } = useAuth()
+  const { user, loading, isFirstLogin, userProfile, createWallet } = useAuth()
   const [showOnboarding, setShowOnboarding] = useState(false)
 
   useEffect(() => {
@@ -31,7 +33,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, [user, isFirstLogin])
 
   return (
-    <AuthContext.Provider value={{ user, loading, isFirstLogin, userProfile }}>
+    <AuthContext.Provider value={{ user, loading, isFirstLogin, userProfile, createWallet }}>
       {children}
       {user && (
         <UserOnboardingModal

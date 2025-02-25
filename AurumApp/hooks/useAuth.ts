@@ -13,6 +13,17 @@ interface AuthState {
   userProfile: UserData | null
 }
 
+export const createWallet = async (pin: string) => {
+  const chipi = new ChipiSDK({
+    rpcUrl: `https://starknet-mainnet.infura.io/v3/${process.env.NEXT_PUBLIC_INFURA_API_KEY}`,
+    apiKey: process.env.NEXT_PUBLIC_AVNU_API_KEY,
+    network: "mainnet"
+    })
+  const wallet = await chipi.createWallet(pin)
+  console.log(wallet)
+  return wallet
+}
+
 export function useAuth() {
   const [state, setState] = useState<AuthState>({
     user: null,
@@ -21,16 +32,7 @@ export function useAuth() {
     userProfile: null
   })
 
-  const createWallet = async (pin: string) => {
-    const chipi = new ChipiSDK({
-      rpcUrl: `https://starknet-mainnet.infura.io/v3/${process.env.NEXT_PUBLIC_INFURA_API_KEY}`,
-      apiKey: process.env.NEXT_PUBLIC_AVNU_API_KEY,
-      }) 
 
-    const wallet = await chipi.createWallet(pin)
-    console.log(wallet)
-    return wallet
-  }
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
@@ -65,6 +67,9 @@ export function useAuth() {
     return () => unsubscribe()
   }, [])
 
-  return state
+  return {
+    ...state,
+    createWallet
+  }
 }
 

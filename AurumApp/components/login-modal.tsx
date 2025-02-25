@@ -124,7 +124,7 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
         "Verification email sent! Please check your inbox and click the verification link.",
         { duration: 5000 }
       )
-    } catch (error) {
+    } catch (error) { 
       console.error("Error sending verification email:", error)
       toast.error("Failed to send verification email")
     }

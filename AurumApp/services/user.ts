@@ -9,6 +9,7 @@ interface UserData {
   createdAt: string
   lastLoginAt: string
   isFirstLogin: boolean
+  walletAddress?: string
 }
 
 export const userService = {
