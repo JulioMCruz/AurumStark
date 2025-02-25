@@ -21,27 +21,8 @@ export function UserOnboardingModal({ isOpen, onClose, userId }: UserOnboardingM
   const [name, setName] = useState("")
   const [pin, setPin] = useState("")
   const [userType, setUserType] = useState<"customer" | "merchant" | "">("")
-  const { user, loading } = useContext(AuthContext)
-  const [createWalletFn, setCreateWalletFn] = useState<((pin: string) => Promise<any>) | null>(null)
-  const [isClientSide, setIsClientSide] = useState(false)
-
-  // Only import and initialize the wallet functionality on the client side
-  useEffect(() => {
-    setIsClientSide(true)
-    
-    const initializeWalletFunctionality = async () => {
-      try {
-        // Dynamically import the useAuth hook only on the client side
-        const { useAuth } = await import("@/hooks/useAuth")
-        const { createWallet } = useAuth()
-        setCreateWalletFn(() => createWallet)
-      } catch (error) {
-        console.error("Failed to initialize wallet functionality:", error)
-      }
-    }
-
-    initializeWalletFunctionality()
-  }, [])
+  const { user, loading, createWallet } = useContext(AuthContext)
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -56,14 +37,11 @@ export function UserOnboardingModal({ isOpen, onClose, userId }: UserOnboardingM
       return
     }
 
-    if (!createWalletFn) {
-      toast.error("Wallet functionality is not available yet. Please try again.")
-      return
-    }
+    setIsSubmitting(true)
 
     try {
       // Create wallet using the PIN
-      const wallet = await createWalletFn(pin)
+      const wallet = await createWallet(pin)
       
       // Validate wallet object and address
       if (!wallet || !wallet.success) {
@@ -92,6 +70,8 @@ export function UserOnboardingModal({ isOpen, onClose, userId }: UserOnboardingM
     } catch (error) {
       console.error("Error during onboarding:", error)
       toast.error(`Failed to complete onboarding: ${error instanceof Error ? error.message : 'Unknown error'}`)
+    } finally {
+      setIsSubmitting(false)
     }
   }
 
@@ -177,9 +157,9 @@ export function UserOnboardingModal({ isOpen, onClose, userId }: UserOnboardingM
           <Button 
             type="submit" 
             className="w-full button-gradient"
-            disabled={!name || pin.length !== 6 || !userType || !isClientSide || !createWalletFn}
+            disabled={!name || pin.length !== 6 || !userType || isSubmitting}
           >
-            Complete Profile
+            {isSubmitting ? "Creating Profile..." : "Complete Profile"}
           </Button>
         </form>
       </DialogContent>
