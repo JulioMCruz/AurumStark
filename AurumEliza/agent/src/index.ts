@@ -157,6 +157,7 @@ import { formPlugin } from "@elizaos/plugin-form";
 import { MongoClient } from "mongodb";
 import { quickIntelPlugin } from "@elizaos/plugin-quick-intel";
 import { starknetAurumUsdcPlugin } from "@elizaos/plugin-starknet-aurum-usdc";
+import { starknetAurumRewardPlugin } from "@elizaos/plugin-starknet-aurum-reward";
 
 import { trikonPlugin } from "@elizaos/plugin-trikon";
 import arbitragePlugin from "@elizaos/plugin-arbitrage";
@@ -1301,7 +1302,8 @@ export async function createAgent(
             // getSecret(character, "DESK_EXCHANGE_NETWORK")
             //     ? deskExchangePlugin
             //     : null,
-            starknetAurumUsdcPlugin
+            starknetAurumUsdcPlugin,
+            starknetAurumRewardPlugin
         ]
             .flat()
             .filter(Boolean),
