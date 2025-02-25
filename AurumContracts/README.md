@@ -110,6 +110,18 @@ Deployer Address: `0x07bF75f078f9F3FaCD4D4e45C43d880fD348a20b47C87BDacd9057a6c7F
 
 RPC URL: `https://starknet-mainnet.g.alchemy.com/starknet/version/rpc/v0_7/MIuGIhA0jzBYkfSbJ1pfmX0dB-kJcmO0`
 
+## Deployed Contracts (Sepolia Testnet)
+
+| Contract Name | Address |
+|--------------|---------|
+| AurumUsdc | `0x5315902efd62667a0ca3c228decc63b30fb663e411dc726ac0f2ba35e8665f` |
+| AurumRewardPoints | `0x3e0a89574505b2efa400485f1977b8b6d4741ddb20b46d7dd25700335311cd7` |
+| AurumReward | `0x72d6a54994d80337db96da95b19454ab87c7c5ca9490d72d4901c6464676412` |
+
+Deployer Address: `0x05a7e5c5813c860fd88fd3f346c9329987b1d3d2f571c6024db1af5192deb6d6`
+
+RPC URL: `https://api.cartridge.gg/x/starknet/sepolia`
+
 ## Development Setup
 
 1. Install dependencies:
