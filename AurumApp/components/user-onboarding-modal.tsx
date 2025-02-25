@@ -39,7 +39,14 @@ export function UserOnboardingModal({ isOpen, onClose, userId }: UserOnboardingM
     try {
       // Create wallet using the PIN
       const wallet = await createWallet(pin)
-      if (!wallet) throw new Error("Failed to create wallet")
+      
+      // Validate wallet object and address
+      if (!wallet || !wallet.success) {
+        console.error("Invalid wallet response:", wallet)
+        throw new Error("Failed to create wallet: Invalid wallet data received")
+      }
+
+      console.log("wallet", wallet)
 
       // Update user profile
       const updatedProfile = await userService.updateUserProfile({
@@ -47,7 +54,7 @@ export function UserOnboardingModal({ isOpen, onClose, userId }: UserOnboardingM
         data: {
           name,
           isFirstLogin: false,
-          walletAddress: wallet.address, // Store the wallet address
+          walletAddress: wallet.wallet?.publicKey, // Store the wallet address
           userType // Store the user type
         }
       })
@@ -61,7 +68,7 @@ export function UserOnboardingModal({ isOpen, onClose, userId }: UserOnboardingM
       onClose()
     } catch (error) {
       console.error("Error during onboarding:", error)
-      toast.error("Failed to complete onboarding")
+      toast.error(`Failed to complete onboarding: ${error instanceof Error ? error.message : 'Unknown error'}`)
       // onClose()
     }
   }
