@@ -82,69 +82,19 @@ sequenceDiagram
     AurumReward->>User: Emit FeeCollected & PointsRewarded events
 ```
 
-## Deployed Contracts (Sepolia Testnet)
+## Deployed Contracts (Mainnet)
 
 | Contract Name | Address |
 |--------------|---------|
-| AurumUsdc | `0x040976C636d469331A343a2Fa3E67280663124a5bd7Fc0BC17191ECb847d1E42` |
-| AurumRewardPoints | `0x00386cC559e9033b57Bb9E2Eb85a40f2af43dCfD51fa030C7ff8E4C8Ba2B54d2` |
-| AurumReward | `0x020a6E405F957ee966e6f1309039731F0f1D20A3074C035b08e4cFBfdb711B88` |
+| AurumUsdc | `0x053c91253bc9682c04929ca02ed00b3e423f6710d2ee7e0d5ebb06f3ecf368a8` |
+| AurumRewardPoints | `0x5d1e9273f66ecbf2a64392e4346046f7ec6e3f5787cbdadd6637feb6f48243c` |
+| AurumReward | `0x290d82f4967bdb9e89921abbdf5716c81c2fba9fa2d1ffd42b1895910d5503d` |
 
-Transaction Hash: `0x335a845eef08833553d8cfc5369528d7a013dc142fef67fb1ce144455622246`
+Deployer Address: `0x07bF75f078f9F3FaCD4D4e45C43d880fD348a20b47C87BDacd9057a6c7Fd320d`
+
+RPC URL: `https://starknet-mainnet.g.alchemy.com/starknet/version/rpc/v0_7/MIuGIhA0jzBYkfSbJ1pfmX0dB-kJcmO0`
 
 ## Development Setup
 
 1. Install dependencies:
-```bash
-yarn install
 ```
-
-2. Compile contracts:
-```bash
-yarn compile
-```
-
-3. Run tests:
-```bash
-yarn test
-```
-
-4. Deploy contracts:
-```bash
-yarn deploy
-```
-
-## Environment Setup
-
-The project uses the following tools and versions:
-- Starknet-devnet: v0.2.3
-- Scarb: v2.9.2
-- Snforge: v0.35.1
-- Cairo: v2.9.2
-- RPC: v0.7.1
-
-Make sure to have these versions installed for compatibility.
-
-## Scripts
-
-- `yarn chain`: Start local Starknet network
-- `yarn compile`: Compile smart contracts
-- `yarn deploy`: Deploy contracts to network
-- `yarn test`: Run contract tests
-- `yarn verify`: Verify contract deployments
-
-## Project Structure
-
-```
-AurumContracts/
-├── packages/
-│   ├── snfoundry/
-│   │   ├── contracts/
-│   │   │   └── src/
-│   │   │       ├── AurumUsdc.cairo
-│   │   │       ├── AurumReward.cairo
-│   │   │       └── AurumRewardPoints.cairo
-│   │   ├── scripts-ts/
-│   │   └── tests/
-│   └── nextjs/
-└── README.md
