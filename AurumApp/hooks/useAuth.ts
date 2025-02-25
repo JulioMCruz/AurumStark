@@ -55,7 +55,7 @@ export function useAuth() {
       return response
     } catch (error) {
       console.error("Error creating wallet:", error)
-      throw error
+      //throw error
     }
   }, [createWalletAsync])
 
