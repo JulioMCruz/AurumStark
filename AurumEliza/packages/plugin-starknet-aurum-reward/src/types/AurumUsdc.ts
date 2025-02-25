@@ -1,4 +1,4 @@
-import { num, cairo, Contract, BigNumberish } from 'starknet';
+import { num, cairo, Contract, BigNumberish, AccountInterface } from 'starknet';
 
 export interface AurumUsdcContract {
     address: string;
@@ -8,14 +8,14 @@ export interface AurumUsdcContract {
     totalSupply(): Promise<bigint>;
     balanceOf(account: string): Promise<bigint>;
     transfer(recipient: string, amount: BigNumberish): Promise<boolean>;
-    approve(spender: string, amount: BigNumberish): Promise<boolean>;
+    approve(spender: string, amount: BigNumberish,  account: AccountInterface): Promise<string>;
     getDecimals(): Promise<number>;
     getBalance(address: string): Promise<bigint>;
     convertToUSDC(amount: string, fromCurrency: string): Promise<string>;
 }
 
 export interface AurumUsdcProvider {
-    approve(spender: string, amount: BigNumberish): Promise<boolean>;
+    approve(spender: string, amount: BigNumberish): Promise<string>;
     getAccountAddress(): string;
     getBalance(address: string): Promise<string>;
     transfer(to: string, amount: string): Promise<boolean>;

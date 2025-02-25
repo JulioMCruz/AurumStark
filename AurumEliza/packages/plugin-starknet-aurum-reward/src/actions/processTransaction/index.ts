@@ -78,13 +78,15 @@ export class ProcessTransactionAction implements Action {
                 amount: amount.toString()
             });
 
-            // await this.usdcProvider.approve(this.rewardProvider.getAddress(), amount.toString());
-            await this.rewardProvider.processTransaction(sender, recipient, amount);
+            const approveTxHash = await this.usdcProvider.approve(this.rewardProvider.getAddress(), amount.toString());
+            const processTxHash = await this.rewardProvider.processTransaction(sender, recipient, amount);
 
             elizaLogger.info("[🟢 AURUM REWARD ACTION] Transaction processed successfully:", {
                 sender,
                 recipient,
-                amount: amount.toString()
+                amount: amount.toString(),
+                approveTxHash,
+                processTxHash
             });
 
             callback({
@@ -93,6 +95,8 @@ export class ProcessTransactionAction implements Action {
                     sender,
                     recipient,
                     amount: amount.toString(),
+                    approveTxHash,
+                    processTxHash
                 },
             });
 

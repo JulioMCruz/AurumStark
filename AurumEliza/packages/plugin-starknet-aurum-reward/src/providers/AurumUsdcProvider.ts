@@ -15,16 +15,15 @@ export class AurumUsdcProvider implements IAurumUsdcProvider {
         this.account = account;
         this.contract = new AurumUsdcContract(contractAddress, account);
     }
-    approve(spender: string, amount: BigNumberish): Promise<boolean> {
+    approve(spender: string, amount: BigNumberish): Promise<string> {
         try {
             elizaLogger.info('[✅ AURUM REWARD] AurumUsdcProvider - Approval:', {
                 spender,
                 amount
             });
-            return this.contract.approve(spender, amount);
+            return this.contract.approve(spender, amount, this.account);
         } catch (error) {
             elizaLogger.error('[❌ AURUM REWARD] AurumUsdcProvider - Approval failed:', error);
-            return Promise.resolve(false);
         }
     }
 

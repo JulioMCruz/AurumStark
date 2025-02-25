@@ -44,29 +44,26 @@ export class AurumUsdcContract implements IAurumUsdcContract {
         return BigInt(result.toString());
     }
 
-    public async approve(spender: string, amount: BigNumberish): Promise<boolean> {
+    public async approve(spender: string, amount: BigNumberish, account: AccountInterface): Promise<string> {
         try {
             elizaLogger.info("[🟡 AURUM USDC] Approving tokens:", {
                 spender,
                 amount: amount.toString()
             });
             // SHOW CONTRACT INFO
-            elizaLogger.info("[🟡 AURUM USDC] Contract Info:", {
-                address: this.contract.address,
-                abi: this.contract.abi
-            });
-
             const uint256Amount = cairo.uint256(amount);
-            await this.contract.call("approve", [
-                spender,
-                uint256Amount
-            ]);
-
+            const tx = await account.execute({
+                contractAddress: this.contract.address,
+                entrypoint: "approve",
+                calldata: this.calldata.compile("approve", {
+                    spender,
+                    amount: uint256Amount
+                })
+            });
             elizaLogger.info("[🟢 AURUM USDC] Approval successful");
-            return true;
+            return tx.transaction_hash;
         } catch (error) {
             elizaLogger.error("[❌ AURUM USDC] Approval failed:", error);
-            return false;
         }
     }
 
