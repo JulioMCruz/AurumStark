@@ -4,12 +4,6 @@ import "./globals.css"
 import { Footer } from "@/components/footer"
 import { Providers } from "@/components/providers"
 
-import {
-  DynamicContextProvider,
-  DynamicWidget,
-} from "@dynamic-labs/sdk-react-core";
-import { StarknetWalletConnectors } from "@dynamic-labs/starknet";
-
 const inter = Inter({ subsets: ["latin"] })
 
 export const metadata = {
@@ -27,15 +21,8 @@ export default function RootLayout({
     <html lang="en" className="dark">
       <body className={`${inter.className} bg-background text-foreground antialiased flex flex-col`}>
         <Providers>
-          <DynamicContextProvider
-            settings={{
-              environmentId: process.env.NEXT_PUBLIC_DYNAMIC_APP_ID || "",
-              walletConnectors: [StarknetWalletConnectors],
-            }}
-          >
-            {children}
-            {/* <Footer /> */}
-          </DynamicContextProvider>
+              {children}
+              {/* <Footer /> */}
         </Providers>
       </body>
     </html>

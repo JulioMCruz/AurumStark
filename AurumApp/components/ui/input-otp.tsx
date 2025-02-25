@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { OTPInput, OTPInputContext } from "input-otp"
+import { OTPInput, OTPInputContext, SlotProps } from "input-otp"
 import { Dot } from "lucide-react"
 
 import { cn } from "@/lib/utils"
@@ -32,11 +32,8 @@ InputOTPGroup.displayName = "InputOTPGroup"
 
 const InputOTPSlot = React.forwardRef<
   React.ElementRef<"div">,
-  React.ComponentPropsWithoutRef<"div"> & { index: number }
->(({ index, className, ...props }, ref) => {
-  const inputOTPContext = React.useContext(OTPInputContext)
-  const { char, hasFakeCaret, isActive } = inputOTPContext.slots[index]
-
+  React.ComponentPropsWithoutRef<"div"> & SlotProps
+>(({ char, hasFakeCaret, isActive, className, ...props }, ref) => {
   return (
     <div
       ref={ref}
