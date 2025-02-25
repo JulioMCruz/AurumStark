@@ -5,16 +5,9 @@ import { GetBalanceAction } from "./actions";
 
 // Direcciones de contratos por red
 const CONTRACT_ADDRESSES = {
-    mainnet: '0x049d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7', // USDC en mainnet
-    sepolia: '0x040976C636d469331A343a2Fa3E67280663124a5bd7Fc0BC17191ECb847d1E42', // USDC en testnet
+    mainnet: '0x053c91253bc9682c04929ca02ed00b3e423f6710d2ee7e0d5ebb06f3ecf368a8', // USDC en mainnet
+    sepolia: '0x005315902efd62667a0ca3c228decc63b30fb663e411dc726ac0f2ba35e8665f', // USDC en testnet
     devnet: '0x049d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7'  // USDC en devnet
-};
-
-// URLs de RPC por red
-const RPC_URLS = {
-    mainnet: 'https://starknet-mainnet.public.blastapi.io',
-    sepolia: 'https://api.cartridge.gg/x/starknet/sepolia',
-    devnet: 'http://localhost:5050'
 };
 
 interface PluginConfig {
@@ -24,10 +17,22 @@ interface PluginConfig {
     rpcUrl?: string;
 }
 
+// Añadir validación para la variable de entorno
+const VALID_NETWORKS = ['mainnet', 'sepolia', 'devnet'] as const;
+type NetworkType = typeof VALID_NETWORKS[number];
+
+const AURUM_NETWORK = (process.env.AURUM_NETWORK || 'sepolia') as NetworkType;
+const AURUM_RPC_URL = (process.env.AURUM_RPC_URL || 'https://api.cartridge.gg/x/starknet/sepolia') as NetworkType;
+
+// Validar que la red sea válida
+if (!VALID_NETWORKS.includes(AURUM_NETWORK)) {
+    throw new Error(`Red no válida: ${AURUM_NETWORK}. Debe ser una de: ${VALID_NETWORKS.join(', ')}`);
+}
+
 function createPlugin(config: PluginConfig): Plugin {
     const {
-        network = 'sepolia',
-        rpcUrl = RPC_URLS[network],
+        network = AURUM_NETWORK,
+        rpcUrl = AURUM_RPC_URL,
         privateKey,
         accountAddress
     } = config;
@@ -73,8 +78,8 @@ export const createAurumUsdcPlugin = createPlugin;
 
 // Exportar instancia predefinida del plugin
 export const starknetAurumUsdcPlugin = createPlugin({
-    network: 'sepolia',
-    rpcUrl: 'https://api.cartridge.gg/x/starknet/sepolia',
+    network: AURUM_NETWORK,
+    rpcUrl: AURUM_RPC_URL,
     // Estas credenciales deberían venir de variables de entorno en producción
     privateKey: '0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef',
     accountAddress: '0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef'

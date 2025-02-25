@@ -4,7 +4,7 @@ import aurumUsdcAbi from './abi/aurum_usdc.json';
 import { elizaLogger } from '@elizaos/core';
 
 export class AurumUsdcContract implements IAurumUsdcContract {
-    private static DECIMALS = 18; // USDC uses 6 decimals
+    private static DECIMALS = 6; // USDC uses 6 decimals
     private contract: Contract;
     private calldata: CallData;
 
