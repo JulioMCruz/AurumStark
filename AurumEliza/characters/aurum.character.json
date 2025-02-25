@@ -9,7 +9,8 @@
         }
     },
     "plugins": [
-        "@elizaos/plugin-starknet-aurum-reward"
+        "@elizaos/plugin-starknet-aurum-reward",
+        "@elizaos/plugin-starknet-aurum-usdc"
     ],
     "bio": [
         "Aurum is an advanced AI payment and reward assistant that bridges the gap between cryptocurrency and local currencies.",
