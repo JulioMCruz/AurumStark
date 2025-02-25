@@ -6,6 +6,7 @@ pub trait IAurumReward<TContractState> {
     fn accumulated_fees(self: @TContractState) -> u256;
     fn usdc_token(self: @TContractState) -> starknet::ContractAddress;
     fn reward_points_token(self: @TContractState) -> starknet::ContractAddress;
+    fn withdraw_fees(ref self: TContractState, amount: u256);
 }
 
 #[starknet::contract]
@@ -22,6 +23,7 @@ pub mod AurumReward {
         usdc_token: IERC20CamelDispatcher,
         reward_points: IAurumRewardPointsDispatcher,
         accumulated_fees: u256,
+        admin: ContractAddress,
     }
 
     #[event]
@@ -54,6 +56,7 @@ pub mod AurumReward {
         self.usdc_token.write(IERC20CamelDispatcher { contract_address: usdc_address });
         self.reward_points.write(IAurumRewardPointsDispatcher { contract_address: reward_points_address });
         self.accumulated_fees.write(0);
+        self.admin.write(starknet::get_caller_address());
     }
 
     #[abi(embed_v0)]
@@ -61,26 +64,36 @@ pub mod AurumReward {
         fn process_transaction(
             ref self: ContractState, sender: ContractAddress, recipient: ContractAddress, amount: u256
         ) {
-            // Calculate 1% fee
+            // Validaciones iniciales
+            assert(amount > 0, 'INVALID_AMOUNT');
+            assert(sender != recipient, 'INVALID_RECIPIENT');
+            
+            // Calcular fee
             let fee = amount / REWARD_RATE;
-            
-            // Transfer main amount minus fee to recipient
             let net_amount = amount - fee;
-            let usdc = self.usdc_token.read();
-            usdc.transferFrom(sender, recipient, net_amount);
             
-            // Transfer fee to this contract
+            let usdc = self.usdc_token.read();
+            
+            // Verificar allowance
+            let sender_allowance = usdc.allowance(sender, get_contract_address());
+            assert(sender_allowance >= amount, 'INSUFFICIENT_ALLOWANCE');
+            
+            // Verificar balance
+            let sender_balance = usdc.balanceOf(sender);
+            assert(sender_balance >= amount, 'INSUFFICIENT_BALANCE');
+            
+            // Ejecutar transferencias
+            usdc.transferFrom(sender, recipient, net_amount);
             usdc.transferFrom(sender, get_contract_address(), fee);
             
-            // Update accumulated fees
+            // Actualizar fees y recompensas
             self.accumulated_fees.write(self.accumulated_fees.read() + fee);
             
-            // Calculate and mint reward points (10 points per token of fee)
             let points = fee * POINTS_MULTIPLIER;
             let reward_points = self.reward_points.read();
             reward_points.mint_points(sender, points);
             
-            // Emit events
+            // Emitir eventos
             self.emit(FeeCollected { from: sender, amount: fee });
             self.emit(PointsRewarded { to: sender, amount: points });
         }
@@ -95,6 +108,18 @@ pub mod AurumReward {
 
         fn reward_points_token(self: @ContractState) -> ContractAddress {
             self.reward_points.read().contract_address
+        }
+
+        fn withdraw_fees(ref self: ContractState, amount: u256) {
+            assert(self.admin.read() == starknet::get_caller_address(), 'ONLY_ADMIN');
+            
+            let current_fees = self.accumulated_fees.read();
+            assert(amount <= current_fees, 'INSUFFICIENT_FEES');
+            
+            self.accumulated_fees.write(current_fees - amount);
+            
+            let usdc = self.usdc_token.read();
+            usdc.transfer(self.admin.read(), amount);
         }
     }
 }
