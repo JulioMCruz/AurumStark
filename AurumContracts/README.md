@@ -43,12 +43,28 @@ graph TB
   - 10x points multiplier for rewards (POINTS_MULTIPLIER = 10)
   - Automatic fee collection and points distribution
   - Accumulated fees tracking
+  - Eventos para seguimiento de transacciones
 - Key Functions:
   ```cairo
   fn process_transaction(sender: ContractAddress, recipient: ContractAddress, amount: u256)
   fn accumulated_fees() -> u256
   fn usdc_token() -> ContractAddress
   fn reward_points_token() -> ContractAddress
+  fn withdraw_fees(recipient: ContractAddress, amount: u256)
+  fn get_reward_rate() -> u256
+  fn get_points_multiplier() -> u256
+  ```
+
+- Events:
+  ```cairo
+  #[event]
+  fn TransactionProcessed(sender: ContractAddress, recipient: ContractAddress, amount: u256)
+  #[event]
+  fn FeeCollected(amount: u256)
+  #[event]
+  fn PointsRewarded(recipient: ContractAddress, amount: u256)
+  #[event]
+  fn FeesWithdrawn(recipient: ContractAddress, amount: u256)
   ```
 
 ### 3. AurumRewardPoints (ARP)
