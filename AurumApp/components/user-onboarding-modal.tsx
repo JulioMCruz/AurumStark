@@ -1,4 +1,6 @@
-import { useState, useContext } from "react"
+"use client"
+
+import { useState, useContext, useEffect } from "react"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -6,7 +8,6 @@ import { Label } from "@/components/ui/label"
 import { userService } from "@/services/user"
 import { toast } from "react-hot-toast"
 import { AuthContext } from "@/components/providers/auth-provider"
-import { useAuth } from "@/hooks/useAuth"
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 
@@ -21,7 +22,26 @@ export function UserOnboardingModal({ isOpen, onClose, userId }: UserOnboardingM
   const [pin, setPin] = useState("")
   const [userType, setUserType] = useState<"customer" | "merchant" | "">("")
   const { user, loading } = useContext(AuthContext)
-  const { createWallet } = useAuth()
+  const [createWalletFn, setCreateWalletFn] = useState<((pin: string) => Promise<any>) | null>(null)
+  const [isClientSide, setIsClientSide] = useState(false)
+
+  // Only import and initialize the wallet functionality on the client side
+  useEffect(() => {
+    setIsClientSide(true)
+    
+    const initializeWalletFunctionality = async () => {
+      try {
+        // Dynamically import the useAuth hook only on the client side
+        const { useAuth } = await import("@/hooks/useAuth")
+        const { createWallet } = useAuth()
+        setCreateWalletFn(() => createWallet)
+      } catch (error) {
+        console.error("Failed to initialize wallet functionality:", error)
+      }
+    }
+
+    initializeWalletFunctionality()
+  }, [])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -36,17 +56,20 @@ export function UserOnboardingModal({ isOpen, onClose, userId }: UserOnboardingM
       return
     }
 
+    if (!createWalletFn) {
+      toast.error("Wallet functionality is not available yet. Please try again.")
+      return
+    }
+
     try {
       // Create wallet using the PIN
-      const wallet = await createWallet(pin)
+      const wallet = await createWalletFn(pin)
       
       // Validate wallet object and address
       if (!wallet || !wallet.success) {
         console.error("Invalid wallet response:", wallet)
         throw new Error("Failed to create wallet: Invalid wallet data received")
       }
-
-      console.log("wallet", wallet)
 
       // Update user profile
       const updatedProfile = await userService.updateUserProfile({
@@ -69,7 +92,6 @@ export function UserOnboardingModal({ isOpen, onClose, userId }: UserOnboardingM
     } catch (error) {
       console.error("Error during onboarding:", error)
       toast.error(`Failed to complete onboarding: ${error instanceof Error ? error.message : 'Unknown error'}`)
-      // onClose()
     }
   }
 
@@ -155,7 +177,7 @@ export function UserOnboardingModal({ isOpen, onClose, userId }: UserOnboardingM
           <Button 
             type="submit" 
             className="w-full button-gradient"
-            disabled={!name || pin.length !== 6 || !userType}
+            disabled={!name || pin.length !== 6 || !userType || !isClientSide || !createWalletFn}
           >
             Complete Profile
           </Button>

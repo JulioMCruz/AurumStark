@@ -41,12 +41,19 @@ export function useAuth() {
     userProfile: null
   })
 
-  // Use the safe client-side hook
-  const { createWalletAsync } = useClientSideChipi()
+  // Check if we're on the client side before using Chipi hooks
+  const isClient = typeof window !== 'undefined'
+  
+  // Only use the Chipi hook on the client side
+  const chipiHooks = isClient 
+    ? useClientSideChipi() 
+    : { createWalletAsync: null }
+  
+  const { createWalletAsync } = chipiHooks
 
   const createWallet = useCallback(async (pin: string) => {
     if (!createWalletAsync) {
-      throw new Error("Wallet creation not initialized")
+      throw new Error("Wallet creation not initialized or running on server")
     }
 
     try {
@@ -55,11 +62,14 @@ export function useAuth() {
       return response
     } catch (error) {
       console.error("Error creating wallet:", error)
-      //throw error
+      throw error
     }
   }, [createWalletAsync])
 
   useEffect(() => {
+    // Skip auth state monitoring on the server
+    if (!isClient) return
+
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       if (user) {
         try {
@@ -90,7 +100,7 @@ export function useAuth() {
     })
 
     return () => unsubscribe()
-  }, [])
+  }, [isClient])
 
   return {
     ...state,
