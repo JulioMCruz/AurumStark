@@ -4,24 +4,21 @@ import { useState, useEffect } from "react"
 import { type User, onAuthStateChanged } from "firebase/auth"
 import { auth } from "@/lib/firebase"
 import { userService } from "@/services/user"
-import { ChipiSDK } from '@chipi-pay/chipi-sdk';
+//import { ChipiSDK } from '@chipi-pay/chipi-sdk';
+import {
+  useApprove,
+  useStake,
+  useCreateWallet,
+  useTransfer,
+  useWithdraw,
+  useCallAnyContract,
+} from "@chipi-pay/chipi-sdk";
 
 interface AuthState {
   user: User | null
   loading: boolean
   isFirstLogin: boolean
   userProfile: UserData | null
-}
-
-export const createWallet = async (pin: string) => {
-  const chipi = new ChipiSDK({
-    rpcUrl: `https://starknet-mainnet.infura.io/v3/${process.env.NEXT_PUBLIC_INFURA_API_KEY}`,
-    apiKey: process.env.NEXT_PUBLIC_AVNU_API_KEY,
-    network: "mainnet"
-    })
-  const wallet = await chipi.createWallet(pin)
-  console.log(wallet)
-  return wallet
 }
 
 export function useAuth() {
@@ -32,7 +29,22 @@ export function useAuth() {
     userProfile: null
   })
 
+  const { createWalletAsync } = useCreateWallet()
 
+  const createWallet = async (pin: string) => {
+    if (!createWalletAsync) {
+      throw new Error("Wallet creation not initialized")
+    }
+
+    try {
+      const response = await createWalletAsync(pin)
+      console.log("creation response", response)
+      return response
+    } catch (error) {
+      console.error("Error creating wallet:", error)
+      throw error
+    }
+  }
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
