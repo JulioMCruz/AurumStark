@@ -1,24 +1,36 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useCallback } from "react"
 import { type User, onAuthStateChanged } from "firebase/auth"
 import { auth } from "@/lib/firebase"
 import { userService } from "@/services/user"
-//import { ChipiSDK } from '@chipi-pay/chipi-sdk';
 import {
-  useApprove,
-  useStake,
   useCreateWallet,
-  useTransfer,
-  useWithdraw,
-  useCallAnyContract,
-} from "@chipi-pay/chipi-sdk";
+} from "@chipi-pay/chipi-sdk"
 
 interface AuthState {
   user: User | null
   loading: boolean
   isFirstLogin: boolean
   userProfile: UserData | null
+}
+
+// Custom hook to safely use Chipi SDK hooks
+function useClientSideChipi() {
+  const [isMounted, setIsMounted] = useState(false)
+  
+  // Always call the hook unconditionally at the top level
+  const createWalletHook = useCreateWallet()
+  
+  useEffect(() => {
+    setIsMounted(true)
+    return () => setIsMounted(false)
+  }, [])
+  
+  // Return null for the function if not mounted yet
+  return {
+    createWalletAsync: isMounted ? createWalletHook.createWalletAsync : null
+  }
 }
 
 export function useAuth() {
@@ -29,9 +41,10 @@ export function useAuth() {
     userProfile: null
   })
 
-  const { createWalletAsync } = useCreateWallet()
+  // Use the safe client-side hook
+  const { createWalletAsync } = useClientSideChipi()
 
-  const createWallet = async (pin: string) => {
+  const createWallet = useCallback(async (pin: string) => {
     if (!createWalletAsync) {
       throw new Error("Wallet creation not initialized")
     }
@@ -44,7 +57,7 @@ export function useAuth() {
       console.error("Error creating wallet:", error)
       throw error
     }
-  }
+  }, [createWalletAsync])
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
