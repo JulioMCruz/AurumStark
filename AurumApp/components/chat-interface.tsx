@@ -89,7 +89,7 @@ export function ChatInterface({ agentId }: { agentId: string }) {
       }
 
       const data = await response.json()
-      return data[0] // Get first response from array
+      return data // Return the full array of responses
     } catch (error) {
       console.error("Error sending message:", error)
       throw error
@@ -106,13 +106,17 @@ export function ChatInterface({ agentId }: { agentId: string }) {
     setIsLoading(true)
 
     try {
-      const response = await sendMessage(input)
+      const responses = await sendMessage(input)
+      
+      // Add each response from the agent as a separate message
+      const assistantMessages = responses.map((response: any) => ({
+        role: "assistant" as const,
+        content: response.text,
+      }))
+      
       setMessages((prevMessages) => [
         ...prevMessages,
-        {
-          role: "assistant",
-          content: response.text,
-        },
+        ...assistantMessages,
       ])
     } catch (error) {
       console.error("Error handling message:", error)
