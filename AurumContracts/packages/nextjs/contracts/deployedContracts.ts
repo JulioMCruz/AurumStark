@@ -1514,7 +1514,7 @@ const deployedContracts = {
   sepolia: {
     AurumUsdc: {
       address:
-        "0x40976c636d469331a343a2fa3e67280663124a5bd7fc0bc17191ecb847d1e42",
+        "0x5315902efd62667a0ca3c228decc63b30fb663e411dc726ac0f2ba35e8665f",
       abi: [
         {
           type: "impl",
@@ -1861,7 +1861,7 @@ const deployedContracts = {
     },
     AurumRewardPoints: {
       address:
-        "0x386cc559e9033b57bb9e2eb85a40f2af43dcfd51fa030c7ff8e4c8ba2b54d2",
+        "0x3e0a89574505b2efa400485f1977b8b6d4741ddb20b46d7dd25700335311cd7",
       abi: [
         {
           type: "impl",
@@ -2276,7 +2276,7 @@ const deployedContracts = {
     },
     AurumReward: {
       address:
-        "0x20a6e405f957ee966e6f1309039731f0f1d20a3074c035b08e4cfbfdb711b88",
+        "0x72d6a54994d80337db96da95b19454ab87c7c5ca9490d72d4901c6464676412",
       abi: [
         {
           type: "impl",
@@ -2435,7 +2435,7 @@ const deployedContracts = {
         },
       ],
       classHash:
-        "0x5974de4e8db17e23b7cac7034b55453a2c6f3dc0a8ac659954fdf90cc67d118",
+        "0x5ceb6367f433d499793cee078f8d050796c79d863dac21863aca9c0f4d9b3d7",
     },
   },
 } as const;

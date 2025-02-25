@@ -9,13 +9,13 @@ import { green } from "./helpers/colorize-log";
 const deployScript = async (): Promise<void> => {
   // 1. Deploy USDC token first
   const initialSupply = BigInt(1000000) * BigInt(10 ** 6); // 1M USDC with 6 decimals
-  // const usdcDeployment = await deployContract({
-  //   contract: "AurumUsdc",
-  //   constructorArgs: {
-  //     initial_supply: initialSupply,
-  //     recipient: deployer.address,
-  //   },
-  // });
+  const usdcDeployment = await deployContract({
+    contract: "AurumUsdc",
+    constructorArgs: {
+      initial_supply: initialSupply,
+      recipient: deployer.address,
+    },
+  });
 
   // 2. Deploy AurumRewardPoints (will be managed by AurumReward)
   const rewardPointsDeployment = await deployContract({
@@ -29,34 +29,27 @@ const deployScript = async (): Promise<void> => {
   const rewardDeployment = await deployContract({
     contract: "AurumReward",
     constructorArgs: {
-      usdc_address: '0x053c91253bc9682c04929ca02ed00b3e423f6710d2ee7e0d5ebb06f3ecf368a8',
+      usdc_address: usdcDeployment.address,
       reward_points_address: rewardPointsDeployment.address,
     },
   });
 
   // 4. Update reward_manager in AurumRewardPoints
-  // TODO: FIX
-  /**
-   *  Error in the called contract (contract address: 0x053600188f3fe9d6b426f45e5bd6f50209ed444d416913369f2776b27d0013f2, class hash: 0x0000000000000000000000000000000000000000000000000000000000000000, selector: 0x03c79e1eb9c3041bf771d2033e3789a9606f91a5548aa0e26dbe0ac11427df19):\n' +
-        'Requested contract address 0x053600188f3fe9d6b426f45e5bd6f50209ed444d416913369f2776b27d0013f2 is not deployed.
-   */
+  await executeDeployCalls();
+
+  // TODO: 
   // await deployer.execute([{
   //   contractAddress: rewardPointsDeployment.address,
   //   entrypoint: "set_reward_manager",
   //   calldata: [rewardDeployment.address]
-  // }]);
+  // }], {
+  //   maxFee: "100000000000000"
+  // });
 };
 
 deployScript()
   .then(async () => {
-    executeDeployCalls()
-      .then(() => {
-        exportDeployments();
-        console.log(green("All Setup Done"));
-      })
-      .catch((e) => {
-        console.error(e);
-        process.exit(1);
-      });
+    exportDeployments();
+    console.log(green("All Setup Done"));
   })
   .catch(console.error);
