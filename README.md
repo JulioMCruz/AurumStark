@@ -6,6 +6,8 @@ AurumStk is a comprehensive platform that enables seamless cryptocurrency paymen
 
 Alice, a traveler in Thailand, wants to pay 500 THB at a local restaurant using cryptocurrency through Aurum:
 
+
+
 ```mermaid
 sequenceDiagram
     actor Alice
